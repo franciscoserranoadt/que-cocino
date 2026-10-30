@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Qué cocino hoy?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1F5EC; --surface:#FFFFFF; --ink:#1E2A1B; --muted:#5E6B58; --line:#D6DFCD;
+  --basil:#2F6B34; --basil-soft:#DCEBD5; --aubergine:#5A2B5C; --lemon:#F4D44A; --lemon-soft:#FBF0B8;
+  --danger:#B3322A;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141A12; --surface:#1E261B; --ink:#E9EFE4; --muted:#A3B09C; --line:#33402E;
+    --basil:#8CC983; --basil-soft:#24361F; --aubergine:#D9A6DB; --lemon:#F4D44A; --lemon-soft:#3A3416;
+    --danger:#FF7B70; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141A12; --surface:#1E261B; --ink:#E9EFE4; --muted:#A3B09C; --line:#33402E;
+  --basil:#8CC983; --basil-soft:#24361F; --aubergine:#D9A6DB; --lemon:#F4D44A; --lemon-soft:#3A3416;
+  --danger:#FF7B70; color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:84px}
+h1,h2,h3{font-family:"Young Serif",Georgia,"Times New Roman",serif;font-weight:400;margin:0;line-height:1.15}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--lemon);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:20px 18px}
+header.hero{padding:28px 18px 8px;max-width:640px;margin:0 auto}
+header.hero h1{font-size:clamp(2rem,8vw,2.8rem);color:var(--basil)}
+header.hero p{margin:.4rem 0 0;color:var(--muted);max-width:34ch}
+.view{display:none}.view.on{display:block}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px}
+.panel h2{font-size:1.25rem;margin-bottom:10px}
+.hint{color:var(--muted);font-size:.9rem;margin:.2rem 0 .8rem}
+.addrow{display:flex;gap:8px}
+.addrow input{flex:1;min-width:0;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg)}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:var(--basil);color:var(--surface)}
+.btn.alt{background:var(--basil-soft);color:var(--basil)}
+.btn.big{width:100%;padding:16px;font-size:1.05rem;background:var(--aubergine);color:var(--surface)}
+.btn:disabled{opacity:.5}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:6px 6px 6px 12px;border-radius:999px;background:var(--basil-soft);border:1px solid transparent;font-weight:500}
+.chip.soon{background:var(--lemon-soft);border-color:var(--lemon)}
+.chip button{border:0;background:transparent;width:30px;height:30px;border-radius:50%;font-size:.95rem;line-height:1}
+.chip button:hover{background:rgba(127,127,127,.15)}
+.quick{display:flex;flex-wrap:wrap;gap:6px}
+.quick button{border:1px dashed var(--line);background:transparent;border-radius:999px;padding:6px 12px;color:var(--muted)}
+.quick button.have{border-style:solid;border-color:var(--basil);color:var(--basil)}
+.empty{color:var(--muted);font-style:italic;padding:8px 0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts label{display:flex;flex-direction:column;font-size:.85rem;color:var(--muted);gap:4px}
+.opts select{padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg)}
+.toggle{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:.95rem}
+.toggle input{width:20px;height:20px;accent-color:var(--basil)}
+.photo{display:flex;align-items:center;gap:12px;margin-top:12px}
+.photo .btn{flex:1}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+.preview{display:block;max-width:100%;max-height:180px;border-radius:12px;margin-top:10px;border:1px solid var(--line)}
+.status{margin:10px 0;color:var(--muted);font-size:.95rem}
+.status.err{color:var(--danger)}
+.card{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
+.card .emo{font-size:2.6rem;line-height:1}
+.card h3{font-size:1.2rem;margin-bottom:4px}
+.card p{margin:0;color:var(--muted);font-size:.92rem}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.meta span{font-size:.8rem;padding:3px 9px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+.meta span.ok{background:var(--basil-soft);border-color:transparent;color:var(--basil);font-weight:600}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav.tabs button{flex:1;border:0;background:transparent;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.78rem;color:var(--muted)}
+nav.tabs button span{font-size:1.35rem}
+nav.tabs button[aria-selected="true"]{color:var(--basil);font-weight:700}
+/* detalle */
+.sheet{position:fixed;inset:0;background:var(--bg);overflow-y:auto;z-index:10;display:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 30px)}
+.sheet.on{display:block}
+.sheet .top{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--line);z-index:2}
+.sheet .top button{border:0;background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600}
+.dhead{text-align:center;padding:10px 0 6px}
+.dhead .emo{font-size:4.5rem}
+.dhead h2{font-size:1.9rem;margin:.2rem 0 .4rem}
+.dhead .meta{justify-content:center}
+.media{display:flex;gap:10px;margin:16px 0}
+.media a{flex:1;text-align:center;text-decoration:none;padding:14px;border-radius:14px;font-weight:600;background:var(--lemon);color:#2A2410}
+.media a.v{background:var(--aubergine);color:var(--surface)}
+ul.ing{list-style:none;padding:0;margin:0}
+ul.ing li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+ul.ing li:last-child{border-bottom:0}
+ul.ing li b{font-weight:600;white-space:nowrap}
+ul.ing.miss li{color:var(--muted)}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:0}
+ol.steps li{counter-increment:s;position:relative;padding:4px 0 18px 46px}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:34px;height:34px;border-radius:50%;background:var(--basil);color:var(--surface);display:grid;place-items:center;font-weight:700}
+ol.steps li.done{opacity:.45}
+ol.steps li.done::before{content:"✓"}
+.stepbtns{display:flex;gap:8px;margin-top:8px}
+.stepbtns button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 10px;font-size:.85rem}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--aubergine)}
+.tip{background:var(--lemon-soft);border-left:4px solid var(--lemon);border-radius:12px;padding:12px 14px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.actions .btn{flex:1}
+@media (prefers-reduced-motion:no-preference){.card{transition:transform .15s}.card:active{transform:scale(.98)}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>¿Qué cocino hoy?</h1>
+  <p>Apunta lo que tienes en casa y te propongo platos para no tirar nada.</p>
+</header>
+
+<main class="wrap">
+
+  <!-- DESPENSA -->
+  <section class="view on" id="v-despensa">
+    <div class="panel">
+      <h2>Lo que tengo en casa</h2>
+      <p class="hint">Escribe cada cosa y, si puedes, la cantidad. Por ejemplo: “2 pechugas de pollo”, “medio brócoli”, “arroz”. Puedes poner varias separadas por comas.</p>
+      <div class="addrow">
+        <input id="in" type="text" placeholder="Ej.: 4 huevos, 300 g de carne picada" autocomplete="off" enterkeyhint="done">
+        <button class="btn" id="add">Añadir</button>
+      </div>
+      <div class="photo" id="photoBox">
+        <button type="button" class="btn alt" id="btnCam">📷 Hacer foto</button>
+        <button type="button" class="btn alt" id="btnGal">🖼️ Desde galería</button>
+      </div>
+      <input class="vh pic" id="inCam" type="file" accept="image/*" capture="environment" tabindex="-1" aria-hidden="true">
+      <input class="vh pic" id="inGal" type="file" accept="image/*" tabindex="-1" aria-hidden="true">
+      <img class="preview" id="preview" alt="Foto enviada" hidden>
+      <div class="status" id="photoStatus"></div>
+      <div class="chips" id="chips"></div>
+      <p class="hint" style="margin-top:12px">Toca ⏰ en lo que caduca pronto: lo usaré primero.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Básicos de despensa</h2>
+      <p class="hint">Toca los que tengas para añadirlos rápido.</p>
+      <div class="quick" id="quick"></div>
+    </div>
+
+    <div class="panel">
+      <h2>¿Para cuándo?</h2>
+      <div class="opts">
+        <label>Comida
+          <select id="o-tipo">
+            <option>Cualquiera</option><option>Desayuno</option><option>Comida</option><option>Cena</option><option>Postre</option><option>Aperitivo</option>
+          </select>
+        </label>
+        <label>Personas
+          <select id="o-pers"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option></select>
+        </label>
+        <label>Tiempo
+          <select id="o-tiempo"><option value="15">Hasta 15 min</option><option value="30" selected>Hasta 30 min</option><option value="60">Hasta 1 hora</option><option value="999">Me da igual</option></select>
+        </label>
+        <label>Estilo
+          <select id="o-estilo"><option>Cualquiera</option><option>Ligero / sano</option><option>Casero de siempre</option><option>Vegetariano</option><option>Para sorprender</option></select>
+        </label>
+      </div>
+      <label class="toggle"><input type="checkbox" id="o-solo"> Solo con lo que tengo, sin comprar nada</label>
+    </div>
+
+    <button class="btn big" id="go">Buscar recetas</button>
+    <div class="status" id="goStatus" role="status"></div>
+  </section>
+
+  <!-- RECETAS -->
+  <section class="view" id="v-recetas">
+    <div id="list"><p class="empty">Aún no has buscado recetas. Ve a la despensa y pulsa «Buscar recetas».</p></div>
+    <button class="btn alt" id="more" hidden style="width:100%">Darme otras ideas</button>
+  </section>
+
+  <!-- AJUSTES -->
+  <section class="view" id="v-ajustes">
+    <div class="panel">
+      <h2>Inteligencia de las recetas</h2>
+      <p class="hint">La app necesita una clave para inventar las recetas. Se guarda solo en este móvil.</p>
+      <div class="opts" style="grid-template-columns:1fr">
+        <label>Proveedor
+          <select id="s-prov">
+            <option value="gemini">Gemini de Google (gratis)</option>
+            <option value="claude">Claude de Anthropic (de pago)</option>
+          </select>
+        </label>
+        <label>Clave API
+          <input id="s-key" type="password" autocomplete="off" placeholder="Pega aquí la clave" style="padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg)">
+        </label>
+        <label>Modelo
+          <input id="s-model" type="text" autocomplete="off" style="padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg)">
+        </label>
+      </div>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn" id="s-save">Guardar</button>
+        <button class="btn alt" id="s-test">Probar conexión</button>
+      </div>
+      <div class="status" id="s-status" role="status"></div>
+    </div>
+    <div class="panel" id="s-help"></div>
+  </section>
+
+  <!-- GUARDADAS -->
+  <section class="view" id="v-guardadas">
+    <div id="favs"></div>
+  </section>
+</main>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" aria-selected="true" data-v="despensa"><span>🧺</span>Despensa</button>
+  <button role="tab" aria-selected="false" data-v="recetas"><span>🍳</span>Recetas</button>
+  <button role="tab" aria-selected="false" data-v="guardadas"><span>❤️</span>Guardadas</button>
+  <button role="tab" aria-selected="false" data-v="ajustes"><span>⚙️</span>Ajustes</button>
+</nav>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="top"><button id="close">← Volver</button><button id="fav">♡ Guardar</button></div>
+  <div class="wrap" id="detail"></div>
+</div>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+
+  let pantry = load("qc_pantry", []);
+  let favs = load("qc_favs", []);
+  let recipes = load("qc_last", []);
+  let current = null;
+  let ctl = null;
+  const DEFAULT_MODEL = { gemini:"gemini-3.6-flash", claude:"claude-haiku-5-5" };
+  let cfg = load("qc_cfg", { prov:"gemini", key:"", model:"" });
+
+  /* ---------- conexión con la IA ---------- */
+  class AIError extends Error { constructor(code, msg){ super(msg||code); this.code = code; } }
+  function modelName(){ return (cfg.model||"").trim() || DEFAULT_MODEL[cfg.prov]; }
+  function parseJSON(text){
+    let t = String(text||"").replace(/```json|```/g,"").trim();
+    const a = t.search(/[\[{]/), b = Math.max(t.lastIndexOf("}"), t.lastIndexOf("]"));
+    if(a<0 || b<a) throw new AIError("bad_json");
+    try { return JSON.parse(t.slice(a,b+1)); } catch(e){ throw new AIError("bad_json"); }
+  }
+  async function toImage(file){
+    if(!file.type || !file.type.startsWith("image/")) throw new AIError("not_image");
+    const url = URL.createObjectURL(file);
+    try{
+      const img = await new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ko(new AIError("image_rejected")); i.src=url; });
+      const max = 1280, k = Math.min(1, max/Math.max(img.width,img.height));
+      const c = document.createElement("canvas"); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+      c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+      return { mime:"image/jpeg", data:c.toDataURL("image/jpeg",0.85).split(",")[1] };
+    } finally { URL.revokeObjectURL(url); }
+  }
+  async function askAI(prompt, opts){
+    opts = opts || {};
+    if(!cfg.key) throw new AIError("no_key");
+    const img = opts.image ? await toImage(opts.image) : null;
+    let res;
+    try{
+      if(cfg.prov === "claude"){
+        const content = [];
+        if(img) content.push({type:"image", source:{type:"base64", media_type:img.mime, data:img.data}});
+        content.push({type:"text", text:prompt});
+        res = await fetch("https://api.anthropic.com/v1/messages", {
+          method:"POST", signal:opts.signal,
+          headers:{ "content-type":"application/json", "x-api-key":cfg.key, "anthropic-version":"2023-06-01", "anthropic-dangerous-direct-browser-access":"true" },
+          body: JSON.stringify({ model:modelName(), max_tokens:8000, messages:[{role:"user", content}] })
+        });
+      } else {
+        const parts = [{text:prompt}];
+        if(img) parts.push({inlineData:{mimeType:img.mime, data:img.data}});
+        res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(modelName())+":generateContent", {
+          method:"POST", signal:opts.signal,
+          headers:{ "content-type":"application/json", "x-goog-api-key":cfg.key },
+          body: JSON.stringify({ contents:[{parts}], generationConfig:{ responseMimeType:"application/json" } })
+        });
+      }
+    }catch(e){
+      if(e && e.name==="AbortError") throw new AIError("cancelled");
+      throw new AIError("network");
+    }
+    const body = await res.json().catch(()=>({}));
+    if(!res.ok){
+      const msg = (body.error && (body.error.message||body.error.type)) || ("Error "+res.status);
+      if(res.status===401 || res.status===403) throw new AIError("bad_key", msg);
+      if(res.status===429) throw new AIError("rate_limited", msg);
+      if(res.status===404) throw new AIError("bad_model", msg);
+      throw new AIError("api", msg);
+    }
+    const text = cfg.prov==="claude"
+      ? (body.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("")
+      : ((body.candidates&&body.candidates[0]&&body.candidates[0].content&&body.candidates[0].content.parts)||[]).map(p=>p.text||"").join("");
+    return parseJSON(text);
+  }
+
+  const BASICS = ["Aceite de oliva","Sal","Pimienta","Ajo","Cebolla","Huevos","Arroz","Pasta","Harina","Leche","Tomate frito","Patatas","Pan","Queso","Mantequilla","Azúcar","Pimentón","Orégano","Caldo","Limón"];
+
+  /* ---------- despensa ---------- */
+  function renderPantry(){
+    const box = $("#chips");
+    if(!pantry.length){ box.innerHTML = '<p class="empty">Tu despensa está vacía. Añade lo que tengas arriba.</p>'; }
+    else box.innerHTML = pantry.map((p,i)=>
+      `<span class="chip${p.soon?" soon":""}">${esc(p.name)}
+        <button aria-label="Caduca pronto" title="Caduca pronto" data-soon="${i}">⏰</button>
+        <button aria-label="Quitar ${esc(p.name)}" data-del="${i}">✕</button></span>`).join("");
+    const have = new Set(pantry.map(p=>p.name.toLowerCase()));
+    $("#quick").innerHTML = BASICS.map(b=>`<button class="${have.has(b.toLowerCase())?"have":""}" data-b="${esc(b)}">${have.has(b.toLowerCase())?"✓ ":"+ "}${esc(b)}</button>`).join("");
+    save("qc_pantry", pantry);
+  }
+  function addItems(text){
+    text.split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean).forEach(n=>{
+      if(!pantry.some(p=>p.name.toLowerCase()===n.toLowerCase())) pantry.push({name:n, soon:false});
+    });
+    renderPantry();
+  }
+  $("#add").onclick = ()=>{ addItems($("#in").value); $("#in").value=""; $("#in").focus(); };
+  $("#in").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); $("#add").click(); }});
+  $("#chips").onclick = e=>{
+    const d = e.target.closest("[data-del]"), s = e.target.closest("[data-soon]");
+    if(d){ pantry.splice(+d.dataset.del,1); renderPantry(); }
+    if(s){ const p = pantry[+s.dataset.soon]; p.soon=!p.soon; renderPantry(); }
+  };
+  $("#quick").onclick = e=>{
+    const b = e.target.closest("[data-b]"); if(!b) return;
+    const n = b.dataset.b, i = pantry.findIndex(p=>p.name.toLowerCase()===n.toLowerCase());
+    if(i>=0) pantry.splice(i,1); else pantry.push({name:n,soon:false});
+    renderPantry();
+  };
+
+  /* ---------- pestañas ---------- */
+  function show(v){
+    document.querySelectorAll(".view").forEach(x=>x.classList.toggle("on", x.id==="v-"+v));
+    document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.v===v));
+    if(v==="guardadas") renderFavs();
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll("nav.tabs button").forEach(b=> b.onclick = ()=>show(b.dataset.v));
+
+  /* ---------- errores ---------- */
+  function errText(e){
+    switch(e && e.code){
+      case "no_key": return "Falta configurar la clave. Ve a la pestaña Ajustes.";
+      case "bad_key": return "La clave no es válida o no tiene permiso. Revísala en Ajustes.";
+      case "bad_model": return "Ese modelo no existe. Borra el campo Modelo en Ajustes para usar el recomendado.";
+      case "rate_limited": return "Se ha llegado al límite de uso. Espera un rato y vuelve a intentarlo.";
+      case "network": return "Sin conexión a internet. Comprueba el wifi o los datos.";
+      case "cancelled": return "Búsqueda cancelada.";
+      case "image_rejected": return "La foto no se pudo leer. Prueba con otra o desde la galería.";
+      case "not_image": return "Ese archivo no es una foto.";
+      case "bad_json": return "La respuesta llegó incompleta. Vuelve a intentarlo.";
+      default: return "No se pudieron generar las recetas. " + (e && e.message ? "("+e.message+")" : "Inténtalo de nuevo.");
+    }
+  }
+
+  /* ---------- foto de la nevera ---------- */
+  $("#btnCam").onclick = ()=>$("#inCam").click();
+  $("#btnGal").onclick = ()=>$("#inGal").click();
+  document.querySelectorAll(".pic").forEach(inp=> inp.onchange = async e=>{
+    const f = e.target.files && e.target.files[0]; if(!f) return;
+    const st = $("#photoStatus");
+    if(!cfg.key){ st.className="status err"; st.textContent=errText({code:"no_key"}); e.target.value=""; return; }
+    st.className="status"; st.textContent="Mirando la foto…";
+    try{
+      const pv = $("#preview"); if(pv.src) URL.revokeObjectURL(pv.src); pv.src = URL.createObjectURL(f); pv.hidden = false;
+      const res = await askAI(
+        'Mira esta foto de una nevera, despensa o encimera. Enumera en español los alimentos que se reconocen, con una cantidad aproximada si se puede (ej.: "6 huevos", "1 brick de leche", "medio pimiento rojo"). Responde SOLO con un array JSON de strings.',
+        {image:f});
+      if(Array.isArray(res) && res.length){ addItems(res.join(",")); st.textContent = "Añadidos "+res.length+" alimentos. Revisa y quita lo que no sea correcto."; }
+      else st.textContent = "No reconocí alimentos en la foto. Prueba con más luz o más cerca.";
+    }catch(err){ st.className="status err"; st.textContent = errText(err); }
+    e.target.value="";
+  });
+
+  /* ---------- buscar recetas ---------- */
+  async function search(other){
+    const st = $("#goStatus");
+    if(!pantry.length){ st.className="status err"; st.textContent="Añade al menos un alimento a la despensa."; return; }
+    if(!cfg.key){ st.className="status err"; st.textContent=errText({code:"no_key"}); return; }
+    const lista = pantry.map(p=>"- "+p.name+(p.soon?" (CADUCA PRONTO, prioridad)":"")).join("\n");
+    const tiempo = $("#o-tiempo").value;
+    const evitar = other && recipes.length ? "\nNo repitas estas recetas: "+recipes.map(r=>r.titulo).join(", ")+"." : "";
+    const prompt =
+`Eres un cocinero casero español experto en aprovechar lo que hay en la nevera.
+Alimentos disponibles en casa:
+${lista}
+
+Condiciones:
+- Tipo de comida: ${$("#o-tipo").value}
+- Personas: ${$("#o-pers").value}
+- Tiempo máximo: ${tiempo==="999"?"sin límite":tiempo+" minutos"}
+- Estilo: ${$("#o-estilo").value}
+- ${$("#o-solo").checked ? "Usa SOLO los alimentos disponibles (se permiten agua, sal y aceite)." : "Puedes añadir como mucho 2 ingredientes que falten, y solo si son muy comunes."}
+- Prioriza los alimentos marcados como CADUCA PRONTO y aprovecha el máximo de alimentos posible.
+- Las cantidades deben ser realistas para ${$("#o-pers").value} persona(s) y NUNCA superar lo que hay en casa cuando se indica cantidad.
+${evitar}
+
+Propón 5 recetas variadas, ordenadas de mayor a menor aprovechamiento.
+Responde SOLO con JSON válido con esta forma exacta:
+{"recetas":[{"titulo":"","emoji":"un emoji de comida","resumen":"una frase apetecible","tiempo_min":20,"dificultad":"Fácil|Media|Difícil","raciones":2,"aprovecha":"qué alimentos de casa usa, en una frase corta","ingredientes":[{"nombre":"","cantidad":"ej. 200 g / 2 unidades / 1 cucharada"}],"faltan":[{"nombre":"","cantidad":""}],"pasos":[{"texto":"paso claro y detallado","minutos":0}],"consejo":"truco para que salga mejor o cómo aprovechar las sobras","busqueda":"nombre de la receta para buscar fotos y vídeos"}]}
+En "pasos", pon en "minutos" el tiempo de espera o cocción de ese paso (0 si no hay). "faltan" debe ser [] si no falta nada.`;
+
+    $("#go").disabled = true; $("#more").disabled = true;
+    st.className="status"; st.innerHTML='Pensando recetas… <button class="btn alt" id="stop" style="padding:6px 12px;margin-left:8px">Parar</button>';
+    ctl = new AbortController();
+    $("#stop").onclick = ()=>ctl.abort();
+    if(other){ $("#list").innerHTML = '<p class="status">Buscando otras ideas…</p>'; }
+    try{
+      const data = await askAI(prompt, {signal:ctl.signal});
+      const r = data && Array.isArray(data.recetas) ? data.recetas : [];
+      if(!r.length) throw {code:"empty"};
+      recipes = r; save("qc_last", recipes);
+      st.textContent=""; renderList(); show("recetas");
+    }catch(err){
+      st.className="status err"; st.textContent = errText(err);
+      if(other) renderList();
+    }finally{ $("#go").disabled=false; $("#more").disabled=false; }
+  }
+  $("#go").onclick = ()=>search(false);
+  $("#more").onclick = ()=>search(true);
+
+  function cardHTML(r, i, src){
+    const falta = (r.faltan||[]).length;
+    return `<button class="card" data-src="${src}" data-i="${i}">
+      <span class="emo" aria-hidden="true">${esc(r.emoji||"🍽️")}</span>
+      <span><h3>${esc(r.titulo)}</h3><p>${esc(r.resumen)}</p>
+      <span class="meta"><span>⏱ ${esc(r.tiempo_min)} min</span><span>${esc(r.dificultad)}</span><span>👤 ${esc(r.raciones)}</span>
+      ${falta ? `<span>Falta ${falta}</span>` : `<span class="ok">Tienes todo</span>`}</span></span></button>`;
+  }
+  function renderList(){
+    $("#list").innerHTML = recipes.length ? recipes.map((r,i)=>cardHTML(r,i,"r")).join("") : '<p class="empty">Aún no has buscado recetas. Ve a la despensa y pulsa «Buscar recetas».</p>';
+    $("#more").hidden = !recipes.length;
+  }
+  function renderFavs(){
+    $("#favs").innerHTML = favs.length ? favs.map((r,i)=>cardHTML(r,i,"f")).join("") : '<p class="empty">Cuando una receta te guste, pulsa «♡ Guardar» y aparecerá aquí.</p>';
+  }
+  document.addEventListener("click", e=>{
+    const c = e.target.closest(".card"); if(!c) return;
+    openRecipe((c.dataset.src==="f"?favs:recipes)[+c.dataset.i]);
+  });
+
+  /* ---------- detalle ---------- */
+  const timers = {};
+  function fmt(s){ const m=Math.floor(s/60), r=s%60; return m+":"+String(r).padStart(2,"0"); }
+  function beep(){
+    try{ const a=new (window.AudioContext||window.webkitAudioContext)(); [0,.35,.7].forEach(t=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.25,a.currentTime+t);o.start(a.currentTime+t);o.stop(a.currentTime+t+.2);}); }catch(e){}
+    if(navigator.vibrate) navigator.vibrate([300,150,300]);
+  }
+  function isFav(r){ return favs.some(f=>f.titulo===r.titulo); }
+  function updFav(){ $("#fav").textContent = isFav(current) ? "♥ Guardada" : "♡ Guardar"; }
+
+  function openRecipe(r){
+    current = r;
+    const q = encodeURIComponent(r.busqueda || r.titulo);
+    const ing = (r.ingredientes||[]).map(x=>`<li><span>${esc(x.nombre)}</span><b>${esc(x.cantidad)}</b></li>`).join("");
+    const miss = (r.faltan||[]).map(x=>`<li><span>${esc(x.nombre)}</span><b>${esc(x.cantidad)}</b></li>`).join("");
+    const steps = (r.pasos||[]).map((p,i)=>`<li id="st${i}"><div>${esc(p.texto)}</div>
+      <div class="stepbtns"><button data-done="${i}">Hecho</button>
+      ${p.minutos>0?`<button data-t="${i}" data-m="${p.minutos}">⏱ ${p.minutos} min</button> <span class="timer" id="tm${i}"></span>`:""}</div></li>`).join("");
+    $("#detail").innerHTML = `
+      <div class="dhead"><div class="emo" aria-hidden="true">${esc(r.emoji||"🍽️")}</div>
+        <h2>${esc(r.titulo)}</h2><p class="hint">${esc(r.resumen)}</p>
+        <div class="meta"><span>⏱ ${esc(r.tiempo_min)} min</span><span>${esc(r.dificultad)}</span><span>👤 ${esc(r.raciones)} personas</span></div></div>
+      <div class="media">
+        <a href="https://www.google.com/search?tbm=isch&q=${q}">📸 Ver fotos</a>
+        <a class="v" href="https://www.youtube.com/results?search_query=${q}+receta">▶️ Ver vídeos</a>
+      </div>
+      ${r.aprovecha?`<div class="panel"><h2>Aprovechas</h2><p style="margin:0">${esc(r.aprovecha)}</p></div>`:""}
+      <div class="panel"><h2>Ingredientes</h2><ul class="ing">${ing}</ul></div>
+      ${miss?`<div class="panel"><h2>Te faltaría</h2><ul class="ing miss">${miss}</ul></div>`:""}
+      <div class="panel"><h2>Paso a paso</h2><ol class="steps">${steps}</ol></div>
+      ${r.consejo?`<div class="tip"><b>Truco:</b> ${esc(r.consejo)}</div>`:""}
+      <div class="actions" style="margin-top:16px"><button class="btn alt" id="used">Ya lo he cocinado: quitar de la despensa lo que se gastó</button></div>
+      <div class="panel" id="usedBox" hidden style="margin-top:16px"></div>`;
+    updFav();
+    $("#sheet").classList.add("on"); $("#sheet").scrollTop=0;
+    document.body.style.overflow="hidden";
+  }
+  /* ---------- ya lo he cocinado ---------- */
+  const STOP = new Set(["con","del","las","los","una","uno","unos","unas","para","sin","medio","media","trozo","trozos","unidad","unidades","cucharada","cucharadas","taza","tazas","poco","bote","brick","paquete","lata"]);
+  const words = s => String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-zñ\s]/g," ").split(/\s+/).filter(w=>w.length>2 && !STOP.has(w) && !/^(gr?|kg|ml|cl)$/.test(w))
+    .map(w=>w.replace(/(es|s)$/,""));
+  function matches(pName, ingNames){
+    const pw = words(pName);
+    return ingNames.some(n=>{ const iw = words(n); return pw.some(w=>iw.includes(w)); });
+  }
+  function showUsed(){
+    const ing = (current.ingredientes||[]).map(x=>x.nombre);
+    const box = $("#usedBox");
+    box.hidden = false; $("#used").hidden = true;
+    if(!pantry.length){
+      box.innerHTML = '<p class="empty" style="margin:0">Tu despensa ya está vacía.</p><div class="actions" style="margin-top:12px"><button class="btn alt" id="used-cancel">Cerrar</button></div>';
+      return;
+    }
+    box.innerHTML = '<h2>¿Qué se ha gastado?</h2><p class="hint">He marcado lo que usa esta receta. Desmarca lo que todavía te quede.</p>' +
+      pantry.map((p,i)=>'<label class="toggle" style="margin-top:8px"><input type="checkbox" value="'+i+'" '+((!BASICS.includes(p.name) && matches(p.name, ing))?"checked":"")+'> '+esc(p.name)+'</label>').join("") +
+      '<div class="actions" style="margin-top:14px"><button class="btn" id="used-ok">Quitar marcados</button><button class="btn alt" id="used-cancel">Cancelar</button></div><div class="status err" id="usedMsg"></div>';
+    box.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+  $("#close").onclick = ()=>{ $("#sheet").classList.remove("on"); document.body.style.overflow=""; };
+  $("#fav").onclick = ()=>{
+    if(isFav(current)) favs = favs.filter(f=>f.titulo!==current.titulo); else favs.unshift(current);
+    save("qc_favs", favs); updFav(); renderFavs();
+  };
+  $("#detail").onclick = e=>{
+    const d = e.target.closest("[data-done]");
+    if(d){ $("#st"+d.dataset.done).classList.toggle("done"); return; }
+    const t = e.target.closest("[data-t]");
+    if(t){
+      const i=t.dataset.t;
+      if(timers[i]){ clearInterval(timers[i]); delete timers[i]; $("#tm"+i).textContent=""; t.textContent="⏱ "+t.dataset.m+" min"; return; }
+      let s = +t.dataset.m*60; t.textContent="Parar"; $("#tm"+i).textContent=fmt(s);
+      timers[i] = setInterval(()=>{ s--; const el=$("#tm"+i); if(el) el.textContent=fmt(Math.max(s,0));
+        if(s<=0){ clearInterval(timers[i]); delete timers[i]; if(el) el.textContent="¡Listo!"; t.textContent="⏱ "+t.dataset.m+" min"; beep(); } },1000);
+      return;
+    }
+    if(e.target.id==="used"){ showUsed(); return; }
+    if(e.target.id==="used-cancel"){ $("#usedBox").hidden=true; $("#used").hidden=false; return; }
+    if(e.target.id==="used-ok"){
+      const sel = [...document.querySelectorAll("#usedBox input:checked")].map(i=>+i.value);
+      if(!sel.length){ $("#usedMsg").textContent="Marca al menos un alimento."; return; }
+      pantry = pantry.filter((p,i)=>!sel.includes(i)); renderPantry();
+      $("#usedBox").innerHTML = '<p style="margin:0;font-weight:600;color:var(--basil)">Quitados '+sel.length+' alimentos de la despensa ✓</p>';
+      return;
+    }
+  };
+
+  /* ---------- arranque ---------- */
+  /* ---------- ajustes ---------- */
+  const HELP = {
+    gemini: `<h2>Cómo conseguir la clave gratis de Gemini</h2>
+      <ol style="padding-left:20px;margin:0">
+        <li>Abre <b>aistudio.google.com</b> en el navegador del móvil.</li>
+        <li>Entra con una cuenta de Google.</li>
+        <li>Pulsa <b>Get API key</b> y después <b>Create API key</b>.</li>
+        <li>Copia la clave (empieza por «AIza…») y pégala arriba.</li>
+        <li>Pulsa <b>Guardar</b> y luego <b>Probar conexión</b>.</li>
+      </ol><p class="hint" style="margin-top:10px">Es gratis y no pide tarjeta, pero tiene un límite de uso diario.</p>`,
+    claude: `<h2>Cómo conseguir la clave de Claude</h2>
+      <ol style="padding-left:20px;margin:0">
+        <li>Abre <b>console.anthropic.com</b> y crea una cuenta.</li>
+        <li>En <b>Billing</b>, añade saldo con tarjeta.</li>
+        <li>En <b>API Keys</b>, pulsa <b>Create Key</b>.</li>
+        <li>Copia la clave (empieza por «sk-ant-…») y pégala arriba.</li>
+        <li>Pulsa <b>Guardar</b> y luego <b>Probar conexión</b>.</li>
+      </ol><p class="hint" style="margin-top:10px">Se paga por uso. Es independiente de la suscripción de claude.ai.</p>`
+  };
+  function renderSettings(){
+    $("#s-prov").value = cfg.prov; $("#s-key").value = cfg.key; $("#s-model").value = cfg.model;
+    $("#s-model").placeholder = "Recomendado: " + DEFAULT_MODEL[cfg.prov];
+    $("#s-help").innerHTML = HELP[cfg.prov];
+  }
+  $("#s-prov").onchange = ()=>{ cfg.prov = $("#s-prov").value; cfg.model=""; renderSettings(); };
+  $("#s-save").onclick = ()=>{
+    cfg = { prov:$("#s-prov").value, key:$("#s-key").value.trim(), model:$("#s-model").value.trim() };
+    save("qc_cfg", cfg); const st=$("#s-status"); st.className="status"; st.textContent = cfg.key ? "Guardado ✓" : "Guardado, pero falta la clave.";
+  };
+  $("#s-test").onclick = async ()=>{
+    $("#s-save").click(); const st=$("#s-status");
+    if(!cfg.key) return;
+    st.className="status"; st.textContent="Probando…";
+    try{ await askAI('Responde SOLO con este JSON: {"ok":true}'); st.textContent="Conexión correcta ✓ Ya puedes buscar recetas."; }
+    catch(e){ st.className="status err"; st.textContent = errText(e); }
+  };
+
+  renderPantry(); renderList(); renderFavs(); renderSettings();
+})();
+</script>
+</body>
+</html>
