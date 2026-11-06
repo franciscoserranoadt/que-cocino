@@ -1,0 +1,194 @@
+name: Construir APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Preparar el proyecto Android
+        run: |
+          mkdir -p www
+          cp index.html www/index.html
+          npm init -y
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 sharp@0.33
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.quecocino.app",
+            "appName": "Qué cocino hoy",
+            "webDir": "www"
+          }
+          EOF
+          npx cap add android
+
+      - name: Poner el icono del horno
+        run: |
+          cat > icon.svg <<'SVG'
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+            <defs>
+              <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#FFD166"/>
+                <stop offset="1" stop-color="#F0782A"/>
+              </linearGradient>
+              <linearGradient id="bread" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#E7A95C"/>
+                <stop offset="1" stop-color="#B8702E"/>
+              </linearGradient>
+            </defs>
+            <g transform="translate(512 526) scale(0.74) translate(-512 -526)">
+            <!-- patas -->
+            <rect x="282" y="770" width="60" height="34" rx="10" fill="#1E2A1B"/>
+            <rect x="682" y="770" width="60" height="34" rx="10" fill="#1E2A1B"/>
+            <!-- cuerpo -->
+            <rect x="232" y="248" width="560" height="534" rx="60" fill="#FBF8F1"/>
+            <!-- panel de mandos -->
+            <path d="M292 248 H732 A60 60 0 0 1 792 308 V372 H232 V308 A60 60 0 0 1 292 248 Z" fill="#E6DFCF"/>
+            <circle cx="318" cy="310" r="30" fill="#2D2D2D"/><rect x="314" y="284" width="8" height="26" rx="4" fill="#FBF8F1"/>
+            <circle cx="412" cy="310" r="30" fill="#2D2D2D"/><rect x="408" y="284" width="8" height="26" rx="4" fill="#FBF8F1" transform="rotate(50 412 310)"/>
+            <rect x="560" y="286" width="170" height="48" rx="12" fill="#1E2A1B"/>
+            <circle cx="595" cy="310" r="9" fill="#F4D44A"/><circle cx="628" cy="310" r="9" fill="#F4D44A"/><circle cx="661" cy="310" r="9" fill="#F4D44A" opacity=".35"/><circle cx="694" cy="310" r="9" fill="#F4D44A" opacity=".35"/>
+            <!-- tirador -->
+            <rect x="316" y="398" width="392" height="24" rx="12" fill="#BDB4A1"/>
+            <!-- puerta -->
+            <rect x="276" y="436" width="472" height="306" rx="32" fill="#34312C"/>
+            <!-- cristal -->
+            <rect x="314" y="472" width="396" height="234" rx="20" fill="url(#glow)"/>
+            <!-- bandeja -->
+            <rect x="340" y="660" width="344" height="12" rx="6" fill="#8A4A1C" opacity=".55"/>
+            <!-- pan -->
+            <path d="M392 660 C392 560 452 528 512 528 C572 528 632 560 632 660 Z" fill="url(#bread)"/>
+            <path d="M452 592 l30 -26 M500 584 l30 -26 M548 592 l30 -26" stroke="#8A4A1C" stroke-width="12" stroke-linecap="round" fill="none"/>
+            <!-- brillo cristal -->
+            <path d="M334 496 L394 496 L344 590 Z" fill="#FFFFFF" opacity=".28"/>
+            </g>
+          </svg>
+          SVG
+          cat > icons.js <<'JS'
+          const sharp = require('sharp');
+          const fs = require('fs');
+          const RES = 'android/app/src/main/res';
+          const GREEN = '#2F6B34';
+          const sizes = { mdpi: 48, hdpi: 72, xhdpi: 96, xxhdpi: 144, xxxhdpi: 192 };
+          (async () => {
+            const big = await sharp('icon.svg').resize(1024, 1024).png().toBuffer();
+            const inner = await sharp(big).extract({ left: 171, top: 171, width: 682, height: 682 }).png().toBuffer();
+            for (const [d, s] of Object.entries(sizes)) {
+              const dir = RES + '/mipmap-' + d;
+              fs.mkdirSync(dir, { recursive: true });
+              const fg = Math.round(s * 108 / 48);
+              await sharp(big).resize(fg, fg).png().toFile(dir + '/ic_launcher_foreground.png');
+              const art = await sharp(inner).resize(s, s).png().toBuffer();
+              const r = Math.round(s * 0.2);
+              const square = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="' + s + '" height="' + s + '"><rect width="' + s + '" height="' + s + '" rx="' + r + '" fill="' + GREEN + '"/></svg>');
+              const circle = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="' + s + '" height="' + s + '"><circle cx="' + s / 2 + '" cy="' + s / 2 + '" r="' + s / 2 + '" fill="' + GREEN + '"/></svg>');
+              await sharp(square).composite([{ input: art }]).png().toFile(dir + '/ic_launcher.png');
+              await sharp(circle).composite([{ input: art }]).png().toFile(dir + '/ic_launcher_round.png');
+              console.log('Icono ' + d + ' listo');
+            }
+            fs.mkdirSync(RES + '/values', { recursive: true });
+            fs.mkdirSync(RES + '/mipmap-anydpi-v26', { recursive: true });
+            const adaptive = '<?xml version="1.0" encoding="utf-8"?>\n<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\n    <background android:drawable="@color/ic_launcher_background"/>\n    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>\n</adaptive-icon>\n';
+            fs.writeFileSync(RES + '/mipmap-anydpi-v26/ic_launcher.xml', adaptive);
+            fs.writeFileSync(RES + '/mipmap-anydpi-v26/ic_launcher_round.xml', adaptive);
+            const bgFile = RES + '/values/ic_launcher_background.xml';
+            fs.writeFileSync(bgFile, '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="ic_launcher_background">' + GREEN + '</color>\n</resources>\n');
+            console.log('Fondo verde listo');
+          })().catch(e => { console.error(e); process.exit(1); });
+          JS
+          node icons.js
+          ls android/app/src/main/res/mipmap-anydpi-v26/ && cat android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+
+      - name: Dar permiso de cámara
+        run: |
+          sed -i 's#</manifest>#    <uses-permission android:name="android.permission.CAMERA" />\n</manifest>#' android/app/src/main/AndroidManifest.xml
+          grep -n "permission" android/app/src/main/AndroidManifest.xml
+
+      - name: Poner la firma fija
+        run: |
+          mkdir -p ~/.android
+          cat > firma.b64 <<'KEY'
+          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
+          KEY
+          base64 -d firma.b64 > ~/.android/debug.keystore
+          keytool -list -keystore ~/.android/debug.keystore -storepass android | grep -i "SHA" || true
+
+      - name: Compilar la APK
+        run: |
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk ../QueCocinoHoy.apk
+
+      - name: Publicar la APK para descargarla
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Qué cocino hoy v${{ github.run_number }}
+          files: QueCocinoHoy.apk
