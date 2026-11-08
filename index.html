@@ -1,121 +1,176 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-style="huerta">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>¿Qué cocino hoy?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=Caveat:wght@700&family=Lora:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+  try{ var st = localStorage.getItem("qc_style"); if(st) document.documentElement.setAttribute("data-style", JSON.parse(st)); }catch(e){}
+</script>
 <style>
 :root{
-  --bg:#F1F5EC; --surface:#FFFFFF; --ink:#1E2A1B; --muted:#5E6B58; --line:#D6DFCD;
-  --basil:#2F6B34; --basil-soft:#DCEBD5; --aubergine:#5A2B5C; --lemon:#F4D44A; --lemon-soft:#FBF0B8;
-  --danger:#B3322A;
-  color-scheme: light;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
+html[data-style="huerta"]{--bw:1px;--radius:18px;--radiusSm:12px;--fontH:"Young Serif",Georgia,"Times New Roman",serif;--fontB:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;--hWeight:400;--hScale:1;--bg:#F1F5EC;--surface:#FFFFFF;--ink:#1E2A1B;--muted:#5E6B58;--line:#D6DFCD;--border:#D6DFCD;--accent:#2F6B34;--accentInk:#FFFFFF;--accentSoft:#DCEBD5;--accentSoftInk:#24522A;--cta:#5A2B5C;--ctaInk:#FFFFFF;--hi:#F4D44A;--hiSoft:#FBF0B8;--danger:#B3322A;--shadow:none;--bodyBg:none;color-scheme:light}
+html[data-style="recetario"]{--bw:1.5px;--radius:8px;--radiusSm:6px;--fontH:"Caveat","Segoe Print","Comic Sans MS",cursive;--fontB:Lora,Georgia,"Times New Roman",serif;--hWeight:700;--hScale:1.35;--bg:#EFE6D6;--surface:#FFFCF5;--ink:#2B2118;--muted:#75624D;--line:#DCCDB4;--border:#CDBB9C;--accent:#A8352A;--accentInk:#FFFFFF;--accentSoft:#F2DCD3;--accentSoftInk:#8E2B21;--cta:#2D4C7C;--ctaInk:#FFFFFF;--hi:#E3B23C;--hiSoft:#F6E6BC;--danger:#A8352A;--shadow:0 2px 0 rgba(60,40,20,.08), 0 10px 20px -14px rgba(60,40,20,.45);--bodyBg:repeating-linear-gradient(to bottom, transparent 0 31px, rgba(45,76,124,.10) 31px 32px);color-scheme:light}
+html[data-style="pop"]{--bw:2.5px;--radius:16px;--radiusSm:12px;--fontH:"Bricolage Grotesque",system-ui,-apple-system,sans-serif;--fontB:"DM Sans",system-ui,-apple-system,sans-serif;--hWeight:800;--hScale:1.05;--bg:#EEF0FF;--surface:#FFFFFF;--ink:#111111;--muted:#45455A;--line:#C9CBE0;--border:#111111;--accent:#FF5A36;--accentInk:#111111;--accentSoft:#FFE14D;--accentSoftInk:#111111;--cta:#3D5AFE;--ctaInk:#FFFFFF;--hi:#FFE14D;--hiSoft:#FFF3A6;--danger:#D1140B;--shadow:4px 4px 0 #111111;--bodyBg:radial-gradient(rgba(17,17,17,.09) 1.2px, transparent 1.4px) 0 0 / 22px 22px;color-scheme:light}
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#141A12; --surface:#1E261B; --ink:#E9EFE4; --muted:#A3B09C; --line:#33402E;
-    --basil:#8CC983; --basil-soft:#24361F; --aubergine:#D9A6DB; --lemon:#F4D44A; --lemon-soft:#3A3416;
-    --danger:#FF7B70; color-scheme: dark;
-  }
+  html[data-style="huerta"]:not([data-theme="light"]){--bg:#141A12;--surface:#1E261B;--ink:#E9EFE4;--muted:#A3B09C;--line:#33402E;--border:#33402E;--accent:#8CC983;--accentInk:#10200E;--accentSoft:#24361F;--accentSoftInk:#A8DC9F;--cta:#D9A6DB;--ctaInk:#2A0F2B;--hi:#F4D44A;--hiSoft:#3A3416;--danger:#FF7B70;--shadow:none;--bodyBg:none;color-scheme:dark}
+  html[data-style="recetario"]:not([data-theme="light"]){--bg:#1E1914;--surface:#29221B;--ink:#F2E8D8;--muted:#BBA88C;--line:#3F3428;--border:#4A3D2F;--accent:#E5735F;--accentInk:#1E1914;--accentSoft:#3D2620;--accentSoftInk:#F4A090;--cta:#8DB0E6;--ctaInk:#14202F;--hi:#E3B23C;--hiSoft:#3A2F17;--danger:#FF8A75;--shadow:0 10px 20px -14px rgba(0,0,0,.7);--bodyBg:repeating-linear-gradient(to bottom, transparent 0 31px, rgba(141,176,230,.07) 31px 32px);color-scheme:dark}
+  html[data-style="pop"]:not([data-theme="light"]){--bg:#141418;--surface:#1E1E24;--ink:#F4F4F6;--muted:#B4B4C2;--line:#3A3A46;--border:#F4F4F6;--accent:#FF6B4A;--accentInk:#111111;--accentSoft:#FFE14D;--accentSoftInk:#111111;--cta:#7C8CFF;--ctaInk:#0B0B1A;--hi:#FFE14D;--hiSoft:#3A3510;--danger:#FF6B5E;--shadow:4px 4px 0 #3D5AFE;--bodyBg:radial-gradient(rgba(255,255,255,.07) 1.2px, transparent 1.4px) 0 0 / 22px 22px;color-scheme:dark}
 }
-:root[data-theme="dark"]{
-  --bg:#141A12; --surface:#1E261B; --ink:#E9EFE4; --muted:#A3B09C; --line:#33402E;
-  --basil:#8CC983; --basil-soft:#24361F; --aubergine:#D9A6DB; --lemon:#F4D44A; --lemon-soft:#3A3416;
-  --danger:#FF7B70; color-scheme: dark;
-}
+html[data-style="huerta"][data-theme="dark"]{--bg:#141A12;--surface:#1E261B;--ink:#E9EFE4;--muted:#A3B09C;--line:#33402E;--border:#33402E;--accent:#8CC983;--accentInk:#10200E;--accentSoft:#24361F;--accentSoftInk:#A8DC9F;--cta:#D9A6DB;--ctaInk:#2A0F2B;--hi:#F4D44A;--hiSoft:#3A3416;--danger:#FF7B70;--shadow:none;--bodyBg:none;color-scheme:dark}
+html[data-style="recetario"][data-theme="dark"]{--bg:#1E1914;--surface:#29221B;--ink:#F2E8D8;--muted:#BBA88C;--line:#3F3428;--border:#4A3D2F;--accent:#E5735F;--accentInk:#1E1914;--accentSoft:#3D2620;--accentSoftInk:#F4A090;--cta:#8DB0E6;--ctaInk:#14202F;--hi:#E3B23C;--hiSoft:#3A2F17;--danger:#FF8A75;--shadow:0 10px 20px -14px rgba(0,0,0,.7);--bodyBg:repeating-linear-gradient(to bottom, transparent 0 31px, rgba(141,176,230,.07) 31px 32px);color-scheme:dark}
+html[data-style="pop"][data-theme="dark"]{--bg:#141418;--surface:#1E1E24;--ink:#F4F4F6;--muted:#B4B4C2;--line:#3A3A46;--border:#F4F4F6;--accent:#FF6B4A;--accentInk:#111111;--accentSoft:#FFE14D;--accentSoftInk:#111111;--cta:#7C8CFF;--ctaInk:#0B0B1A;--hi:#FFE14D;--hiSoft:#3A3510;--danger:#FF6B5E;--shadow:4px 4px 0 #3D5AFE;--bodyBg:radial-gradient(rgba(255,255,255,.07) 1.2px, transparent 1.4px) 0 0 / 22px 22px;color-scheme:dark}
+
 *,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:84px}
-h1,h2,h3{font-family:"Young Serif",Georgia,"Times New Roman",serif;font-weight:400;margin:0;line-height:1.15}
+body{margin:0;background:var(--bg);background-image:var(--bodyBg);color:var(--ink);font:16px/1.55 var(--fontB);padding-bottom:84px;min-height:100%}
+h1,h2,h3{font-family:var(--fontH);font-weight:var(--hWeight);margin:0;line-height:1.15}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:3px solid var(--lemon);outline-offset:2px}
+:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
 .wrap{max-width:640px;margin:0 auto;padding:20px 18px}
-header.hero{padding:28px 18px 8px;max-width:640px;margin:0 auto}
-header.hero h1{font-size:clamp(2rem,8vw,2.8rem);color:var(--basil)}
-header.hero p{margin:.4rem 0 0;color:var(--muted);max-width:34ch}
+header.hero{padding:28px 18px 6px;max-width:640px;margin:0 auto}
+header.hero h1{font-size:calc(clamp(2rem,8vw,2.8rem) * var(--hScale));color:var(--accent)}
+header.hero p{margin:.4rem 0 0;color:var(--muted);max-width:36ch}
 .view{display:none}.view.on{display:block}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px}
-.panel h2{font-size:1.25rem;margin-bottom:10px}
+.panel{position:relative;background:var(--surface);border:var(--bw) solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:18px}
+.panel h2{font-size:calc(1.25rem * var(--hScale));margin-bottom:10px}
 .hint{color:var(--muted);font-size:.9rem;margin:.2rem 0 .8rem}
 .addrow{display:flex;gap:8px}
-.addrow input{flex:1;min-width:0;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg)}
-.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:var(--basil);color:var(--surface)}
-.btn.alt{background:var(--basil-soft);color:var(--basil)}
-.btn.big{width:100%;padding:16px;font-size:1.05rem;background:var(--aubergine);color:var(--surface)}
+.field,.addrow input,.opts select{width:100%;min-width:0;padding:12px 14px;border-radius:var(--radiusSm);border:var(--bw) solid var(--border);background:var(--bg)}
+.addrow input{flex:1}
+.btn{border:0;border-radius:var(--radiusSm);padding:12px 16px;font-weight:700;background:var(--accent);color:var(--accentInk)}
+.btn.alt{background:var(--accentSoft);color:var(--accentSoftInk)}
+.btn.ghost{background:transparent;border:var(--bw) solid var(--border);color:var(--ink)}
+.btn.big{width:100%;padding:16px;font-size:1.05rem;background:var(--cta);color:var(--ctaInk)}
 .btn:disabled{opacity:.5}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.chip{display:inline-flex;align-items:center;gap:4px;padding:6px 6px 6px 12px;border-radius:999px;background:var(--basil-soft);border:1px solid transparent;font-weight:500}
-.chip.soon{background:var(--lemon-soft);border-color:var(--lemon)}
-.chip button{border:0;background:transparent;width:30px;height:30px;border-radius:50%;font-size:.95rem;line-height:1}
-.chip button:hover{background:rgba(127,127,127,.15)}
+.chip{display:inline-flex;align-items:center;gap:2px;padding:5px 4px 5px 12px;border-radius:999px;background:var(--accentSoft);color:var(--accentSoftInk);font-weight:600;font-size:.95rem}
+.chip.soon{background:var(--hiSoft);color:var(--ink);box-shadow:inset 0 0 0 2px var(--hi)}
+.chip button{border:0;background:transparent;width:30px;height:30px;border-radius:50%;font-size:.9rem;line-height:1;color:inherit}
 .quick{display:flex;flex-wrap:wrap;gap:6px}
-.quick button{border:1px dashed var(--line);background:transparent;border-radius:999px;padding:6px 12px;color:var(--muted)}
-.quick button.have{border-style:solid;border-color:var(--basil);color:var(--basil)}
-.empty{color:var(--muted);font-style:italic;padding:8px 0}
+.quick button{border:1px dashed var(--muted);background:transparent;border-radius:999px;padding:6px 12px;color:var(--muted)}
+.quick button.have{border-style:solid;border-color:var(--accent);color:var(--accent);font-weight:600}
+.empty{color:var(--muted);font-style:italic;padding:8px 0;margin:0}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .opts label{display:flex;flex-direction:column;font-size:.85rem;color:var(--muted);gap:4px}
-.opts select{padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg)}
 .toggle{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:.95rem}
-.toggle input{width:20px;height:20px;accent-color:var(--basil)}
-.photo{display:flex;align-items:center;gap:12px;margin-top:12px}
+.toggle input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.photo{display:flex;gap:10px;margin-top:12px}
 .photo .btn{flex:1}
 .vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
-.preview{display:block;max-width:100%;max-height:180px;border-radius:12px;margin-top:10px;border:1px solid var(--line)}
+.preview{display:block;max-width:100%;max-height:180px;border-radius:var(--radiusSm);margin-top:10px}
 .status{margin:10px 0;color:var(--muted);font-size:.95rem}
 .status.err{color:var(--danger)}
-.card{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
-.card .emo{font-size:2.6rem;line-height:1}
-.card h3{font-size:1.2rem;margin-bottom:4px}
+.card{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;background:var(--surface);border:var(--bw) solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px;color:var(--ink)}
+.card .emo{font-size:2.6rem;line-height:1;flex:none}
+.card h3{font-size:calc(1.2rem * var(--hScale));margin-bottom:4px}
 .card p{margin:0;color:var(--muted);font-size:.92rem}
 .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .meta span{font-size:.8rem;padding:3px 9px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
-.meta span.ok{background:var(--basil-soft);border-color:transparent;color:var(--basil);font-weight:600}
-nav.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
-nav.tabs button{flex:1;border:0;background:transparent;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.78rem;color:var(--muted)}
-nav.tabs button span{font-size:1.35rem}
-nav.tabs button[aria-selected="true"]{color:var(--basil);font-weight:700}
+.meta span.ok{background:var(--accentSoft);border-color:transparent;color:var(--accentSoftInk);font-weight:700}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--surface);border-top:var(--bw) solid var(--border);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav.tabs button{position:relative;flex:1;border:0;background:transparent;padding:9px 2px 11px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:.72rem;color:var(--muted)}
+nav.tabs button span{font-size:1.3rem}
+nav.tabs button[aria-selected="true"]{color:var(--accent);font-weight:700}
+nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:var(--accentInk);font-size:.68rem;font-weight:700;display:grid;place-items:center}
 /* detalle */
-.sheet{position:fixed;inset:0;background:var(--bg);overflow-y:auto;z-index:10;display:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 30px)}
+.sheet{position:fixed;inset:0;background:var(--bg);background-image:var(--bodyBg);overflow-y:auto;z-index:10;display:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 30px)}
 .sheet.on{display:block}
-.sheet .top{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--line);z-index:2}
-.sheet .top button{border:0;background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600}
+.sheet .top{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-bottom:var(--bw) solid var(--border);z-index:2}
+.sheet .top button{border:var(--bw) solid var(--border);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:700}
 .dhead{text-align:center;padding:10px 0 6px}
 .dhead .emo{font-size:4.5rem}
-.dhead h2{font-size:1.9rem;margin:.2rem 0 .4rem}
+.dhead h2{font-size:calc(1.9rem * var(--hScale));margin:.2rem 0 .4rem}
 .dhead .meta{justify-content:center}
-.media{display:flex;gap:10px;margin:16px 0}
-.media a{flex:1;text-align:center;text-decoration:none;padding:14px;border-radius:14px;font-weight:600;background:var(--lemon);color:#2A2410}
-.media a.v{background:var(--aubergine);color:var(--surface)}
+.media{display:flex;gap:10px;margin:16px 0 10px}
+.media button{flex:1;border:var(--bw) solid var(--border);padding:14px;border-radius:var(--radiusSm);font-weight:700;background:var(--hi);color:#221C08}
+.media button.v{background:var(--cta);color:var(--ctaInk)}
+.cookgo{margin-bottom:18px}
 ul.ing{list-style:none;padding:0;margin:0}
 ul.ing li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
 ul.ing li:last-child{border-bottom:0}
-ul.ing li b{font-weight:600;white-space:nowrap}
+ul.ing li b{font-weight:700;white-space:nowrap}
 ul.ing.miss li{color:var(--muted)}
 ol.steps{list-style:none;counter-reset:s;padding:0;margin:0}
 ol.steps li{counter-increment:s;position:relative;padding:4px 0 18px 46px}
-ol.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:34px;height:34px;border-radius:50%;background:var(--basil);color:var(--surface);display:grid;place-items:center;font-weight:700}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--accentInk);display:grid;place-items:center;font-weight:700}
 ol.steps li.done{opacity:.45}
 ol.steps li.done::before{content:"✓"}
-.stepbtns{display:flex;gap:8px;margin-top:8px}
+.stepbtns{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
 .stepbtns button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 10px;font-size:.85rem}
-.timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--aubergine)}
-.tip{background:var(--lemon-soft);border-left:4px solid var(--lemon);border-radius:12px;padding:12px 14px}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--cta)}
+.tip{background:var(--hiSoft);border-left:4px solid var(--hi);border-radius:var(--radiusSm);padding:12px 14px}
 .actions{display:flex;gap:10px;flex-wrap:wrap}
 .actions .btn{flex:1}
+/* compra */
+.shop-item{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}
+.shop-item:last-child{border-bottom:0}
+.shop-tick{flex:1;display:flex;align-items:center;gap:12px;border:0;background:transparent;text-align:left;padding:12px 0}
+.shop-tick .box{width:26px;height:26px;flex:none;border-radius:8px;border:2px solid var(--accent);display:grid;place-items:center;font-weight:700;color:var(--accentInk)}
+.shop-item.done .box{background:var(--accent)}
+.shop-item.done .txt{text-decoration:line-through;color:var(--muted)}
+.shop-item .x{border:0;background:transparent;width:36px;height:36px;border-radius:50%;color:var(--muted)}
+/* estilos */
+.styles{display:grid;gap:10px}
+.styles button{display:flex;align-items:center;gap:12px;text-align:left;padding:12px;border-radius:var(--radiusSm);border:2px solid var(--line);background:var(--bg)}
+.styles button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.styles .sw{display:flex;flex:none}
+.styles .sw i{width:22px;height:22px;border-radius:50%;margin-left:-6px;border:2px solid #fff}
+.styles .sw i:first-child{margin-left:0}
+.styles b{display:block}
+.styles small{color:var(--muted)}
+/* modo cocina */
+.cook{position:fixed;inset:0;z-index:20;background:var(--bg);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.cook.on{display:flex}
+.cook-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-bottom:var(--bw) solid var(--border)}
+.cook-top button{border:var(--bw) solid var(--border);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:700}
+.cook-top .count{font-weight:700;color:var(--muted)}
+.cook-bar{height:6px;background:var(--line)}
+.cook-bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.cook-body{flex:1;overflow-y:auto;padding:22px 20px;max-width:680px;width:100%;margin:0 auto}
+.cook-num{font-family:var(--fontH);font-weight:var(--hWeight);font-size:calc(1.1rem * var(--hScale));color:var(--accent);margin-bottom:10px}
+.cook-text{font-size:clamp(1.35rem,5.6vw,1.95rem);line-height:1.42;margin:0}
+.cook-timer{display:flex;align-items:center;gap:14px;margin-top:22px}
+.cook-timer .timer{font-size:2rem}
+.cook-ing{margin-top:22px}
+.cook-ing ul.ing{background:var(--surface);border:var(--bw) solid var(--border);border-radius:var(--radiusSm);padding:4px 14px;margin-top:10px}
+.cook-nav{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;padding:12px 14px 16px;max-width:680px;width:100%;margin:0 auto}
+.cook-nav .btn{min-height:62px;font-size:1.1rem}
+.cook-done{text-align:center;padding-top:30px}
+.cook-done .emo{font-size:5rem}
+/* --- detalles de cada estilo --- */
+html[data-style="recetario"] .panel::before{content:"";position:absolute;top:-11px;left:50%;width:96px;height:22px;transform:translateX(-50%) rotate(-2deg);background:var(--hi);opacity:.55;border-radius:2px}
+html[data-style="recetario"] .panel h2,html[data-style="recetario"] .dhead h2{color:var(--accent)}
+html[data-style="recetario"] .card:nth-child(odd){transform:rotate(-.5deg)}
+html[data-style="recetario"] .card:nth-child(even){transform:rotate(.4deg)}
+html[data-style="recetario"] .card .emo{width:62px;height:62px;display:grid;place-items:center;font-size:2.1rem;border:2px dashed var(--accent);border-radius:50%}
+html[data-style="recetario"] header.hero p{font-style:italic}
+html[data-style="recetario"] .chip{border-radius:4px}
+html[data-style="pop"] header.hero h1{color:var(--ink)}
+html[data-style="pop"] header.hero h1 span{background:var(--hi);color:#111;padding:0 .18em;box-decoration-break:clone;-webkit-box-decoration-break:clone;border:var(--bw) solid var(--border);box-shadow:var(--shadow)}
+html[data-style="pop"] .btn,html[data-style="pop"] .media button{border:var(--bw) solid var(--border);box-shadow:3px 3px 0 var(--border)}
+html[data-style="pop"] .btn:active,html[data-style="pop"] .media button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--border)}
+html[data-style="pop"] .chip{border:2px solid var(--border)}
+html[data-style="pop"] .card .emo{width:64px;height:64px;display:grid;place-items:center;background:var(--hi);border:var(--bw) solid var(--border);border-radius:14px;font-size:2.1rem}
+html[data-style="pop"] nav.tabs button[aria-selected="true"]{color:var(--ink)}
+html[data-style="pop"] nav.tabs button[aria-selected="true"] span{background:var(--hi);border:2px solid var(--border);border-radius:10px;padding:0 10px}
+html[data-style="pop"] ol.steps li::before{border:2px solid var(--border)}
 @media (prefers-reduced-motion:no-preference){.card{transition:transform .15s}.card:active{transform:scale(.98)}}
 </style>
 </head>
 <body>
 
 <header class="hero">
-  <h1>¿Qué cocino hoy?</h1>
+  <h1><span>¿Qué cocino hoy?</span></h1>
   <p>Apunta lo que tienes en casa y te propongo platos para no tirar nada.</p>
 </header>
 
@@ -130,7 +185,7 @@ ol.steps li.done::before{content:"✓"}
         <input id="in" type="text" placeholder="Ej.: 4 huevos, 300 g de carne picada" autocomplete="off" enterkeyhint="done">
         <button class="btn" id="add">Añadir</button>
       </div>
-      <div class="photo" id="photoBox">
+      <div class="photo">
         <button type="button" class="btn alt" id="btnCam">📷 Hacer foto</button>
         <button type="button" class="btn alt" id="btnGal">🖼️ Desde galería</button>
       </div>
@@ -175,14 +230,48 @@ ol.steps li.done::before{content:"✓"}
 
   <!-- RECETAS -->
   <section class="view" id="v-recetas">
-    <div id="list"><p class="empty">Aún no has buscado recetas. Ve a la despensa y pulsa «Buscar recetas».</p></div>
+    <div id="list"></div>
     <button class="btn alt" id="more" hidden style="width:100%">Darme otras ideas</button>
+  </section>
+
+  <!-- COMPRA -->
+  <section class="view" id="v-compra">
+    <div class="panel">
+      <h2>Lista de la compra</h2>
+      <div class="addrow">
+        <input id="shopIn" type="text" placeholder="Ej.: nata, 1 kg de patatas" autocomplete="off" enterkeyhint="done">
+        <button class="btn" id="shopAdd">Añadir</button>
+      </div>
+      <div id="shopList" style="margin-top:10px"></div>
+    </div>
+    <div class="actions" id="shopActions" style="flex-direction:column">
+      <button class="btn big" id="shopShare">📤 Compartir por WhatsApp</button>
+      <button class="btn alt" id="shopToPantry">✓ Pasar lo comprado a la despensa</button>
+      <button class="btn ghost" id="shopClear">Borrar lo tachado</button>
+    </div>
+    <div class="status" id="shopStatus" role="status"></div>
+  </section>
+
+  <!-- GUARDADAS -->
+  <section class="view" id="v-guardadas">
+    <div id="favs"></div>
   </section>
 
   <!-- AJUSTES -->
   <section class="view" id="v-ajustes">
     <div class="panel">
+      <h2>Estilo visual</h2>
+      <p class="hint">Prueba los tres y quédate con el que más te guste.</p>
+      <div class="styles" id="styles">
+        <button data-style="huerta"><span class="sw"><i style="background:#2F6B34"></i><i style="background:#5A2B5C"></i><i style="background:#F4D44A"></i></span><span><b>Huerta</b><small>Verde fresco y elegante</small></span></button>
+        <button data-style="recetario"><span class="sw"><i style="background:#A8352A"></i><i style="background:#2D4C7C"></i><i style="background:#E3B23C"></i></span><span><b>Recetario</b><small>Cuaderno de cocina escrito a mano</small></span></button>
+        <button data-style="pop"><span class="sw"><i style="background:#FF5A36"></i><i style="background:#3D5AFE"></i><i style="background:#FFE14D"></i></span><span><b>Pop</b><small>Colores vivos y letras con fuerza</small></span></button>
+      </div>
+    </div>
+
+    <div class="panel">
       <h2>Inteligencia de las recetas</h2>
+      <p class="hint" id="s-claude" hidden>Ahora mismo estás dentro de Claude, así que las recetas usan tu cuenta de Claude y no hace falta clave. La clave de abajo es para la APK o para Chrome.</p>
       <p class="hint">La app necesita una clave para inventar las recetas. Se guarda solo en este móvil.</p>
       <div class="opts" style="grid-template-columns:1fr">
         <label>Proveedor
@@ -192,10 +281,10 @@ ol.steps li.done::before{content:"✓"}
           </select>
         </label>
         <label>Clave API
-          <input id="s-key" type="password" autocomplete="off" placeholder="Pega aquí la clave" style="padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg)">
+          <input class="field" id="s-key" type="password" autocomplete="off" placeholder="Pega aquí la clave">
         </label>
         <label>Modelo
-          <input id="s-model" type="text" autocomplete="off" style="padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg)">
+          <input class="field" id="s-model" type="text" autocomplete="off">
         </label>
       </div>
       <div class="actions" style="margin-top:14px">
@@ -206,16 +295,12 @@ ol.steps li.done::before{content:"✓"}
     </div>
     <div class="panel" id="s-help"></div>
   </section>
-
-  <!-- GUARDADAS -->
-  <section class="view" id="v-guardadas">
-    <div id="favs"></div>
-  </section>
 </main>
 
 <nav class="tabs" role="tablist">
   <button role="tab" aria-selected="true" data-v="despensa"><span>🧺</span>Despensa</button>
   <button role="tab" aria-selected="false" data-v="recetas"><span>🍳</span>Recetas</button>
+  <button role="tab" aria-selected="false" data-v="compra"><span>🛒</span>Compra<em class="badge" id="shopBadge" hidden></em></button>
   <button role="tab" aria-selected="false" data-v="guardadas"><span>❤️</span>Guardadas</button>
   <button role="tab" aria-selected="false" data-v="ajustes"><span>⚙️</span>Ajustes</button>
 </nav>
@@ -225,50 +310,87 @@ ol.steps li.done::before{content:"✓"}
   <div class="wrap" id="detail"></div>
 </div>
 
+<div class="cook" id="cook" role="dialog" aria-modal="true" aria-label="Modo cocina">
+  <div class="cook-top">
+    <button id="ck-close">✕ Salir</button>
+    <span class="count" id="ck-count"></span>
+    <button id="ck-voice" aria-pressed="true">🔊 Voz</button>
+  </div>
+  <div class="cook-bar"><i id="ck-bar"></i></div>
+  <div class="status err" id="ck-vmsg" role="status" style="margin:8px 16px 0" hidden></div>
+  <div class="cook-body" id="ck-body"></div>
+  <div class="cook-nav" id="ck-nav">
+    <button class="btn ghost" id="ck-prev">← Anterior</button>
+    <button class="btn" id="ck-next">Siguiente →</button>
+  </div>
+</div>
+
 <script>
 (function(){
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } };
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+  const isNative = () => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  const plugin = name => { const C = window.Capacitor; if(!isNative()) return null; return (C.Plugins && C.Plugins[name]) || (C.registerPlugin ? C.registerPlugin(name) : null); };
 
   let pantry = load("qc_pantry", []);
   let favs = load("qc_favs", []);
   let recipes = load("qc_last", []);
+  let shop = load("qc_shop", []);
+  let voiceOn = load("qc_voice", true);
   let current = null;
   let ctl = null;
+  let sample = null;
   const DEFAULT_MODEL = { gemini:"gemini-3.6-flash", claude:"claude-haiku-5-5" };
   let cfg = load("qc_cfg", { prov:"gemini", key:"", model:"" });
+  const BASICS = ["Aceite de oliva","Sal","Pimienta","Ajo","Cebolla","Huevos","Arroz","Pasta","Harina","Leche","Tomate frito","Patatas","Pan","Queso","Mantequilla","Azúcar","Pimentón","Orégano","Caldo","Limón"];
+
+  /* ---------- abrir enlaces externos ---------- */
+  function openExternal(url){
+    if(isNative()) { window.location.href = url; return; }
+    const w = window.open(url, "_blank", "noopener");
+    if(!w) window.location.href = url;
+  }
 
   /* ---------- conexión con la IA ---------- */
-  class AIError extends Error { constructor(code, msg){ super(msg||code); this.code = code; } }
+  function AIError(code, msg){ const e = new Error(msg||code); e.code = code; return e; }
   function modelName(){ return (cfg.model||"").trim() || DEFAULT_MODEL[cfg.prov]; }
+  function aiReady(){ return !!sample || !!cfg.key; }
   function parseJSON(text){
-    let t = String(text||"").replace(/```json|```/g,"").trim();
+    const t = String(text||"").replace(/```json|```/g,"").trim();
     const a = t.search(/[\[{]/), b = Math.max(t.lastIndexOf("}"), t.lastIndexOf("]"));
-    if(a<0 || b<a) throw new AIError("bad_json");
-    try { return JSON.parse(t.slice(a,b+1)); } catch(e){ throw new AIError("bad_json"); }
+    if(a<0 || b<a) throw AIError("bad_json");
+    try { return JSON.parse(t.slice(a,b+1)); } catch(e){ throw AIError("bad_json"); }
   }
-  async function toImage(file){
-    if(!file.type || !file.type.startsWith("image/")) throw new AIError("not_image");
+  async function shrink(file){
+    if(!file.type || !file.type.startsWith("image/")) throw AIError("not_image");
     const url = URL.createObjectURL(file);
     try{
-      const img = await new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ko(new AIError("image_rejected")); i.src=url; });
-      const max = 1280, k = Math.min(1, max/Math.max(img.width,img.height));
+      const img = await new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ko(AIError("image_rejected")); i.src=url; });
+      const k = Math.min(1, 1280/Math.max(img.width,img.height));
       const c = document.createElement("canvas"); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
       c.getContext("2d").drawImage(img,0,0,c.width,c.height);
-      return { mime:"image/jpeg", data:c.toDataURL("image/jpeg",0.85).split(",")[1] };
+      const blob = await new Promise((ok,ko)=>c.toBlob(b=>b?ok(b):ko(AIError("image_rejected")),"image/jpeg",0.85));
+      return { blob, b64: c.toDataURL("image/jpeg",0.85).split(",")[1] };
     } finally { URL.revokeObjectURL(url); }
   }
   async function askAI(prompt, opts){
     opts = opts || {};
-    if(!cfg.key) throw new AIError("no_key");
-    const img = opts.image ? await toImage(opts.image) : null;
+    const img = opts.image ? await shrink(opts.image) : null;
+    if(sample){
+      const o = { modelTier:"default" };
+      if(opts.signal) o.signal = opts.signal;
+      if(opts.fresh) o.cache = false;
+      if(img) o.images = [img.blob];
+      return await sample.json(prompt, o);
+    }
+    if(!cfg.key) throw AIError("no_key");
     let res;
     try{
       if(cfg.prov === "claude"){
         const content = [];
-        if(img) content.push({type:"image", source:{type:"base64", media_type:img.mime, data:img.data}});
+        if(img) content.push({type:"image", source:{type:"base64", media_type:"image/jpeg", data:img.b64}});
         content.push({type:"text", text:prompt});
         res = await fetch("https://api.anthropic.com/v1/messages", {
           method:"POST", signal:opts.signal,
@@ -277,7 +399,7 @@ ol.steps li.done::before{content:"✓"}
         });
       } else {
         const parts = [{text:prompt}];
-        if(img) parts.push({inlineData:{mimeType:img.mime, data:img.data}});
+        if(img) parts.push({inlineData:{mimeType:"image/jpeg", data:img.b64}});
         res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(modelName())+":generateContent", {
           method:"POST", signal:opts.signal,
           headers:{ "content-type":"application/json", "x-goog-api-key":cfg.key },
@@ -285,31 +407,44 @@ ol.steps li.done::before{content:"✓"}
         });
       }
     }catch(e){
-      if(e && e.name==="AbortError") throw new AIError("cancelled");
-      throw new AIError("network");
+      if(e && e.name==="AbortError") throw AIError("cancelled");
+      throw AIError("network");
     }
     const body = await res.json().catch(()=>({}));
     if(!res.ok){
       const msg = (body.error && (body.error.message||body.error.type)) || ("Error "+res.status);
-      if(res.status===401 || res.status===403) throw new AIError("bad_key", msg);
-      if(res.status===429) throw new AIError("rate_limited", msg);
-      if(res.status===404) throw new AIError("bad_model", msg);
-      throw new AIError("api", msg);
+      if(res.status===401 || res.status===403) throw AIError("bad_key", msg);
+      if(res.status===429) throw AIError("rate_limited", msg);
+      if(res.status===404) throw AIError("bad_model", msg);
+      throw AIError("api", msg);
     }
     const text = cfg.prov==="claude"
       ? (body.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("")
       : ((body.candidates&&body.candidates[0]&&body.candidates[0].content&&body.candidates[0].content.parts)||[]).map(p=>p.text||"").join("");
     return parseJSON(text);
   }
-
-  const BASICS = ["Aceite de oliva","Sal","Pimienta","Ajo","Cebolla","Huevos","Arroz","Pasta","Harina","Leche","Tomate frito","Patatas","Pan","Queso","Mantequilla","Azúcar","Pimentón","Orégano","Caldo","Limón"];
+  function errText(e){
+    switch(e && e.code){
+      case "no_key": return "Falta configurar la clave. Ve a la pestaña Ajustes.";
+      case "bad_key": return "La clave no es válida o no tiene permiso. Revísala en Ajustes.";
+      case "bad_model": return "Ese modelo no existe. Borra el campo Modelo en Ajustes para usar el recomendado.";
+      case "rate_limited": return "Se ha llegado al límite de uso. Espera un rato y vuelve a intentarlo.";
+      case "network": return "Sin conexión a internet. Comprueba el wifi o los datos.";
+      case "cancelled": return "Búsqueda cancelada.";
+      case "not_granted": return "Hace falta permitir que la app use Claude para generar recetas.";
+      case "images_unavailable": return "Aquí no se pueden enviar fotos. Añade los alimentos a mano.";
+      case "image_rejected": return "La foto no se pudo leer. Prueba con otra o desde la galería.";
+      case "not_image": return "Ese archivo no es una foto.";
+      case "bad_json": return "La respuesta llegó incompleta. Vuelve a intentarlo.";
+      default: return "No se pudo completar. " + (e && e.message ? "("+e.message+")" : "Inténtalo de nuevo.");
+    }
+  }
 
   /* ---------- despensa ---------- */
   function renderPantry(){
     const box = $("#chips");
-    if(!pantry.length){ box.innerHTML = '<p class="empty">Tu despensa está vacía. Añade lo que tengas arriba.</p>'; }
-    else box.innerHTML = pantry.map((p,i)=>
-      `<span class="chip${p.soon?" soon":""}">${esc(p.name)}
+    box.innerHTML = !pantry.length ? '<p class="empty">Tu despensa está vacía. Añade lo que tengas arriba.</p>' :
+      pantry.map((p,i)=>`<span class="chip${p.soon?" soon":""}">${esc(p.name)}
         <button aria-label="Caduca pronto" title="Caduca pronto" data-soon="${i}">⏰</button>
         <button aria-label="Quitar ${esc(p.name)}" data-del="${i}">✕</button></span>`).join("");
     const have = new Set(pantry.map(p=>p.name.toLowerCase()));
@@ -336,6 +471,23 @@ ol.steps li.done::before{content:"✓"}
     renderPantry();
   };
 
+  /* ---------- foto ---------- */
+  $("#btnCam").onclick = ()=>$("#inCam").click();
+  $("#btnGal").onclick = ()=>$("#inGal").click();
+  document.querySelectorAll(".pic").forEach(inp=> inp.onchange = async e=>{
+    const f = e.target.files && e.target.files[0]; if(!f) return;
+    const st = $("#photoStatus");
+    if(!aiReady()){ st.className="status err"; st.textContent=errText({code:"no_key"}); e.target.value=""; return; }
+    st.className="status"; st.textContent="Mirando la foto…";
+    try{
+      const pv = $("#preview"); if(pv.src) URL.revokeObjectURL(pv.src); pv.src = URL.createObjectURL(f); pv.hidden = false;
+      const res = await askAI('Mira esta foto de una nevera, despensa o encimera. Enumera en español los alimentos que se reconocen, con una cantidad aproximada si se puede (ej.: "6 huevos", "1 brick de leche", "medio pimiento rojo"). Responde SOLO con un array JSON de strings.', {image:f});
+      if(Array.isArray(res) && res.length){ addItems(res.join(",")); st.textContent = "Añadidos "+res.length+" alimentos. Revisa y quita lo que no sea correcto."; }
+      else st.textContent = "No reconocí alimentos en la foto. Prueba con más luz o más cerca.";
+    }catch(err){ st.className="status err"; st.textContent = errText(err); }
+    e.target.value="";
+  });
+
   /* ---------- pestañas ---------- */
   function show(v){
     document.querySelectorAll(".view").forEach(x=>x.classList.toggle("on", x.id==="v-"+v));
@@ -345,46 +497,11 @@ ol.steps li.done::before{content:"✓"}
   }
   document.querySelectorAll("nav.tabs button").forEach(b=> b.onclick = ()=>show(b.dataset.v));
 
-  /* ---------- errores ---------- */
-  function errText(e){
-    switch(e && e.code){
-      case "no_key": return "Falta configurar la clave. Ve a la pestaña Ajustes.";
-      case "bad_key": return "La clave no es válida o no tiene permiso. Revísala en Ajustes.";
-      case "bad_model": return "Ese modelo no existe. Borra el campo Modelo en Ajustes para usar el recomendado.";
-      case "rate_limited": return "Se ha llegado al límite de uso. Espera un rato y vuelve a intentarlo.";
-      case "network": return "Sin conexión a internet. Comprueba el wifi o los datos.";
-      case "cancelled": return "Búsqueda cancelada.";
-      case "image_rejected": return "La foto no se pudo leer. Prueba con otra o desde la galería.";
-      case "not_image": return "Ese archivo no es una foto.";
-      case "bad_json": return "La respuesta llegó incompleta. Vuelve a intentarlo.";
-      default: return "No se pudieron generar las recetas. " + (e && e.message ? "("+e.message+")" : "Inténtalo de nuevo.");
-    }
-  }
-
-  /* ---------- foto de la nevera ---------- */
-  $("#btnCam").onclick = ()=>$("#inCam").click();
-  $("#btnGal").onclick = ()=>$("#inGal").click();
-  document.querySelectorAll(".pic").forEach(inp=> inp.onchange = async e=>{
-    const f = e.target.files && e.target.files[0]; if(!f) return;
-    const st = $("#photoStatus");
-    if(!cfg.key){ st.className="status err"; st.textContent=errText({code:"no_key"}); e.target.value=""; return; }
-    st.className="status"; st.textContent="Mirando la foto…";
-    try{
-      const pv = $("#preview"); if(pv.src) URL.revokeObjectURL(pv.src); pv.src = URL.createObjectURL(f); pv.hidden = false;
-      const res = await askAI(
-        'Mira esta foto de una nevera, despensa o encimera. Enumera en español los alimentos que se reconocen, con una cantidad aproximada si se puede (ej.: "6 huevos", "1 brick de leche", "medio pimiento rojo"). Responde SOLO con un array JSON de strings.',
-        {image:f});
-      if(Array.isArray(res) && res.length){ addItems(res.join(",")); st.textContent = "Añadidos "+res.length+" alimentos. Revisa y quita lo que no sea correcto."; }
-      else st.textContent = "No reconocí alimentos en la foto. Prueba con más luz o más cerca.";
-    }catch(err){ st.className="status err"; st.textContent = errText(err); }
-    e.target.value="";
-  });
-
   /* ---------- buscar recetas ---------- */
   async function search(other){
     const st = $("#goStatus");
     if(!pantry.length){ st.className="status err"; st.textContent="Añade al menos un alimento a la despensa."; return; }
-    if(!cfg.key){ st.className="status err"; st.textContent=errText({code:"no_key"}); return; }
+    if(!aiReady()){ st.className="status err"; st.textContent=errText({code:"no_key"}); return; }
     const lista = pantry.map(p=>"- "+p.name+(p.soon?" (CADUCA PRONTO, prioridad)":"")).join("\n");
     const tiempo = $("#o-tiempo").value;
     const evitar = other && recipes.length ? "\nNo repitas estas recetas: "+recipes.map(r=>r.titulo).join(", ")+"." : "";
@@ -412,11 +529,11 @@ En "pasos", pon en "minutos" el tiempo de espera o cocción de ese paso (0 si no
     st.className="status"; st.innerHTML='Pensando recetas… <button class="btn alt" id="stop" style="padding:6px 12px;margin-left:8px">Parar</button>';
     ctl = new AbortController();
     $("#stop").onclick = ()=>ctl.abort();
-    if(other){ $("#list").innerHTML = '<p class="status">Buscando otras ideas…</p>'; }
+    if(other) $("#list").innerHTML = '<p class="status">Buscando otras ideas…</p>';
     try{
-      const data = await askAI(prompt, {signal:ctl.signal});
+      const data = await askAI(prompt, {signal:ctl.signal, fresh:true});
       const r = data && Array.isArray(data.recetas) ? data.recetas : [];
-      if(!r.length) throw {code:"empty"};
+      if(!r.length) throw AIError("bad_json");
       recipes = r; save("qc_last", recipes);
       st.textContent=""; renderList(); show("recetas");
     }catch(err){
@@ -436,54 +553,94 @@ En "pasos", pon en "minutos" el tiempo de espera o cocción de ese paso (0 si no
       ${falta ? `<span>Falta ${falta}</span>` : `<span class="ok">Tienes todo</span>`}</span></span></button>`;
   }
   function renderList(){
-    $("#list").innerHTML = recipes.length ? recipes.map((r,i)=>cardHTML(r,i,"r")).join("") : '<p class="empty">Aún no has buscado recetas. Ve a la despensa y pulsa «Buscar recetas».</p>';
+    $("#list").innerHTML = recipes.length ? recipes.map((r,i)=>cardHTML(r,i,"r")).join("") : '<div class="panel"><p class="empty">Aún no has buscado recetas. Ve a la despensa y pulsa «Buscar recetas».</p></div>';
     $("#more").hidden = !recipes.length;
   }
   function renderFavs(){
-    $("#favs").innerHTML = favs.length ? favs.map((r,i)=>cardHTML(r,i,"f")).join("") : '<p class="empty">Cuando una receta te guste, pulsa «♡ Guardar» y aparecerá aquí.</p>';
+    $("#favs").innerHTML = favs.length ? favs.map((r,i)=>cardHTML(r,i,"f")).join("") : '<div class="panel"><p class="empty">Cuando una receta te guste, pulsa «♡ Guardar» y aparecerá aquí.</p></div>';
   }
   document.addEventListener("click", e=>{
     const c = e.target.closest(".card"); if(!c) return;
     openRecipe((c.dataset.src==="f"?favs:recipes)[+c.dataset.i]);
   });
 
-  /* ---------- detalle ---------- */
+  /* ---------- ventanas y botón atrás ---------- */
+  const overlays = [];
+  function pushOverlay(name){ overlays.push(name); try{ history.pushState({ov:name}, ""); }catch(e){} }
+  function closeOverlay(){
+    if(history.state && history.state.ov) { try{ history.back(); return; }catch(e){} }
+    const top = overlays.pop(); if(top) hideOverlay(top);
+  }
+  function hideOverlay(name){
+    if(name==="cook") hideCook();
+    if(name==="sheet"){ $("#sheet").classList.remove("on"); document.body.style.overflow=""; }
+  }
+  window.addEventListener("popstate", ()=>{ const top = overlays.pop(); if(top) hideOverlay(top); });
+
+  /* ---------- temporizadores ---------- */
   const timers = {};
-  function fmt(s){ const m=Math.floor(s/60), r=s%60; return m+":"+String(r).padStart(2,"0"); }
+  const fmt = s => Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
   function beep(){
     try{ const a=new (window.AudioContext||window.webkitAudioContext)(); [0,.35,.7].forEach(t=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.25,a.currentTime+t);o.start(a.currentTime+t);o.stop(a.currentTime+t+.2);}); }catch(e){}
     if(navigator.vibrate) navigator.vibrate([300,150,300]);
   }
+  function paintTimer(i, txt){
+    document.querySelectorAll('[data-tm="'+i+'"]').forEach(el=>el.textContent=txt);
+    document.querySelectorAll('[data-t="'+i+'"]').forEach(b=>b.textContent = timers[i] ? "■ Parar" : "⏱ "+b.dataset.m+" min");
+  }
+  function tick(i){
+    const t = timers[i]; if(!t) return;
+    const s = Math.max(0, Math.round((t.end-Date.now())/1000));
+    paintTimer(i, fmt(s));
+    if(s<=0){ clearInterval(t.iv); delete timers[i]; paintTimer(i,"¡Listo!"); beep(); if(voiceOn) speak("¡Tiempo! Ha terminado el paso "+(+i+1)+"."); }
+  }
+  function toggleTimer(i, min){
+    if(timers[i]){ clearInterval(timers[i].iv); delete timers[i]; paintTimer(i,""); return; }
+    timers[i] = { end: Date.now()+min*60000, iv: setInterval(()=>tick(i), 500) };
+    tick(i);
+  }
+  function clearTimers(){ Object.keys(timers).forEach(i=>{ clearInterval(timers[i].iv); delete timers[i]; }); }
+
+  /* ---------- detalle de receta ---------- */
   function isFav(r){ return favs.some(f=>f.titulo===r.titulo); }
   function updFav(){ $("#fav").textContent = isFav(current) ? "♥ Guardada" : "♡ Guardar"; }
-
   function openRecipe(r){
+    if(current !== r) clearTimers();
     current = r;
     const q = encodeURIComponent(r.busqueda || r.titulo);
     const ing = (r.ingredientes||[]).map(x=>`<li><span>${esc(x.nombre)}</span><b>${esc(x.cantidad)}</b></li>`).join("");
     const miss = (r.faltan||[]).map(x=>`<li><span>${esc(x.nombre)}</span><b>${esc(x.cantidad)}</b></li>`).join("");
     const steps = (r.pasos||[]).map((p,i)=>`<li id="st${i}"><div>${esc(p.texto)}</div>
       <div class="stepbtns"><button data-done="${i}">Hecho</button>
-      ${p.minutos>0?`<button data-t="${i}" data-m="${p.minutos}">⏱ ${p.minutos} min</button> <span class="timer" id="tm${i}"></span>`:""}</div></li>`).join("");
+      ${p.minutos>0?`<button data-t="${i}" data-m="${p.minutos}">⏱ ${p.minutos} min</button> <span class="timer" data-tm="${i}"></span>`:""}</div></li>`).join("");
     $("#detail").innerHTML = `
       <div class="dhead"><div class="emo" aria-hidden="true">${esc(r.emoji||"🍽️")}</div>
         <h2>${esc(r.titulo)}</h2><p class="hint">${esc(r.resumen)}</p>
         <div class="meta"><span>⏱ ${esc(r.tiempo_min)} min</span><span>${esc(r.dificultad)}</span><span>👤 ${esc(r.raciones)} personas</span></div></div>
       <div class="media">
-        <a href="https://www.google.com/search?tbm=isch&q=${q}">📸 Ver fotos</a>
-        <a class="v" href="https://www.youtube.com/results?search_query=${q}+receta">▶️ Ver vídeos</a>
+        <button data-ext="https://www.google.com/search?tbm=isch&q=${q}">📸 Ver fotos</button>
+        <button class="v" data-ext="https://www.youtube.com/results?search_query=${q}+receta">▶️ Ver vídeos</button>
       </div>
+      <button class="btn big cookgo" id="cookGo">👩‍🍳 Empezar modo cocina</button>
       ${r.aprovecha?`<div class="panel"><h2>Aprovechas</h2><p style="margin:0">${esc(r.aprovecha)}</p></div>`:""}
       <div class="panel"><h2>Ingredientes</h2><ul class="ing">${ing}</ul></div>
-      ${miss?`<div class="panel"><h2>Te faltaría</h2><ul class="ing miss">${miss}</ul></div>`:""}
+      ${miss?`<div class="panel"><h2>Te faltaría</h2><ul class="ing miss">${miss}</ul>
+        <button class="btn alt" id="toShop" style="width:100%;margin-top:12px">🛒 Añadir a la lista de la compra</button></div>`:""}
       <div class="panel"><h2>Paso a paso</h2><ol class="steps">${steps}</ol></div>
       ${r.consejo?`<div class="tip"><b>Truco:</b> ${esc(r.consejo)}</div>`:""}
       <div class="actions" style="margin-top:16px"><button class="btn alt" id="used">Ya lo he cocinado: quitar de la despensa lo que se gastó</button></div>
       <div class="panel" id="usedBox" hidden style="margin-top:16px"></div>`;
+    Object.keys(timers).forEach(i=>tick(i));
     updFav();
-    $("#sheet").classList.add("on"); $("#sheet").scrollTop=0;
-    document.body.style.overflow="hidden";
+    if(!$("#sheet").classList.contains("on")){ $("#sheet").classList.add("on"); document.body.style.overflow="hidden"; pushOverlay("sheet"); }
+    $("#sheet").scrollTop=0;
   }
+  $("#close").onclick = closeOverlay;
+  $("#fav").onclick = ()=>{
+    if(isFav(current)) favs = favs.filter(f=>f.titulo!==current.titulo); else favs.unshift(current);
+    save("qc_favs", favs); updFav(); renderFavs();
+  };
+
   /* ---------- ya lo he cocinado ---------- */
   const STOP = new Set(["con","del","las","los","una","uno","unos","unas","para","sin","medio","media","trozo","trozos","unidad","unidades","cucharada","cucharadas","taza","tazas","poco","bote","brick","paquete","lata"]);
   const words = s => String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
@@ -498,43 +655,198 @@ En "pasos", pon en "minutos" el tiempo de espera o cocción de ese paso (0 si no
     const box = $("#usedBox");
     box.hidden = false; $("#used").hidden = true;
     if(!pantry.length){
-      box.innerHTML = '<p class="empty" style="margin:0">Tu despensa ya está vacía.</p><div class="actions" style="margin-top:12px"><button class="btn alt" id="used-cancel">Cerrar</button></div>';
-      return;
+      box.innerHTML = '<p class="empty">Tu despensa ya está vacía.</p><div class="actions" style="margin-top:12px"><button class="btn alt" id="used-cancel">Cerrar</button></div>';
+    } else {
+      box.innerHTML = '<h2>¿Qué se ha gastado?</h2><p class="hint">He marcado lo que usa esta receta. Desmarca lo que todavía te quede.</p>' +
+        pantry.map((p,i)=>'<label class="toggle" style="margin-top:8px"><input type="checkbox" value="'+i+'" '+((!BASICS.includes(p.name) && matches(p.name, ing))?"checked":"")+'> '+esc(p.name)+'</label>').join("") +
+        '<div class="actions" style="margin-top:14px"><button class="btn" id="used-ok">Quitar marcados</button><button class="btn alt" id="used-cancel">Cancelar</button></div><div class="status err" id="usedMsg"></div>';
     }
-    box.innerHTML = '<h2>¿Qué se ha gastado?</h2><p class="hint">He marcado lo que usa esta receta. Desmarca lo que todavía te quede.</p>' +
-      pantry.map((p,i)=>'<label class="toggle" style="margin-top:8px"><input type="checkbox" value="'+i+'" '+((!BASICS.includes(p.name) && matches(p.name, ing))?"checked":"")+'> '+esc(p.name)+'</label>').join("") +
-      '<div class="actions" style="margin-top:14px"><button class="btn" id="used-ok">Quitar marcados</button><button class="btn alt" id="used-cancel">Cancelar</button></div><div class="status err" id="usedMsg"></div>';
     box.scrollIntoView({behavior:"smooth", block:"start"});
   }
-  $("#close").onclick = ()=>{ $("#sheet").classList.remove("on"); document.body.style.overflow=""; };
-  $("#fav").onclick = ()=>{
-    if(isFav(current)) favs = favs.filter(f=>f.titulo!==current.titulo); else favs.unshift(current);
-    save("qc_favs", favs); updFav(); renderFavs();
-  };
+
   $("#detail").onclick = e=>{
-    const d = e.target.closest("[data-done]");
-    if(d){ $("#st"+d.dataset.done).classList.toggle("done"); return; }
-    const t = e.target.closest("[data-t]");
-    if(t){
-      const i=t.dataset.t;
-      if(timers[i]){ clearInterval(timers[i]); delete timers[i]; $("#tm"+i).textContent=""; t.textContent="⏱ "+t.dataset.m+" min"; return; }
-      let s = +t.dataset.m*60; t.textContent="Parar"; $("#tm"+i).textContent=fmt(s);
-      timers[i] = setInterval(()=>{ s--; const el=$("#tm"+i); if(el) el.textContent=fmt(Math.max(s,0));
-        if(s<=0){ clearInterval(timers[i]); delete timers[i]; if(el) el.textContent="¡Listo!"; t.textContent="⏱ "+t.dataset.m+" min"; beep(); } },1000);
+    const ext = e.target.closest("[data-ext]"); if(ext){ openExternal(ext.dataset.ext); return; }
+    const d = e.target.closest("[data-done]"); if(d){ $("#st"+d.dataset.done).classList.toggle("done"); return; }
+    const t = e.target.closest("[data-t]"); if(t){ toggleTimer(t.dataset.t, +t.dataset.m); return; }
+    const id = e.target.id;
+    if(id==="cookGo"){ openCook(); return; }
+    if(id==="toShop"){
+      const n = addToShop((current.faltan||[]).map(x=>x.nombre + (x.cantidad ? " ("+x.cantidad+")" : "")));
+      e.target.textContent = n ? "✓ Añadidos "+n+" a la lista de la compra" : "✓ Ya estaban en la lista";
       return;
     }
-    if(e.target.id==="used"){ showUsed(); return; }
-    if(e.target.id==="used-cancel"){ $("#usedBox").hidden=true; $("#used").hidden=false; return; }
-    if(e.target.id==="used-ok"){
+    if(id==="used"){ showUsed(); return; }
+    if(id==="used-cancel"){ $("#usedBox").hidden=true; $("#used").hidden=false; return; }
+    if(id==="used-ok"){
       const sel = [...document.querySelectorAll("#usedBox input:checked")].map(i=>+i.value);
       if(!sel.length){ $("#usedMsg").textContent="Marca al menos un alimento."; return; }
       pantry = pantry.filter((p,i)=>!sel.includes(i)); renderPantry();
-      $("#usedBox").innerHTML = '<p style="margin:0;font-weight:600;color:var(--basil)">Quitados '+sel.length+' alimentos de la despensa ✓</p>';
-      return;
+      $("#usedBox").innerHTML = '<p style="margin:0;font-weight:700;color:var(--accent)">Quitados '+sel.length+' alimentos de la despensa ✓</p>';
     }
   };
 
-  /* ---------- arranque ---------- */
+  /* ---------- voz ---------- */
+  let lastUtter = null, voiceTimer = null;
+  function voiceMsg(t){ const el=$("#ck-vmsg"); if(!el) return; el.textContent = t; el.hidden = !t; }
+  function speak(text){
+    clearTimeout(voiceTimer);
+    const tts = plugin("TextToSpeech");
+    if(tts){
+      Promise.resolve(tts.stop && tts.stop()).catch(()=>{}).then(()=>
+        tts.speak({ text, lang:"es-ES", rate:1.0, pitch:1.0, volume:1.0, category:"ambient" })
+      ).then(()=>voiceMsg("")).catch(err=>{
+        const m = String(err && err.message || err || "");
+        if(!/interrupt|cancel/i.test(m)) voiceMsg("No se pudo leer en voz alta. Revisa que el móvil tenga instalado el motor de voz de Google (Ajustes del móvil → Idioma → Salida de texto a voz).");
+      });
+      return;
+    }
+    if(!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined"){
+      voiceMsg("Aquí no se puede leer en voz alta. Abre la app en Chrome o usa la APK.");
+      return;
+    }
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    setTimeout(()=>{
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "es-ES"; u.rate = 1; u.pitch = 1; u.volume = 1;
+      const vs = synth.getVoices();
+      const v = vs.find(v=>/^es[-_]ES/i.test(v.lang)) || vs.find(v=>/^es/i.test(v.lang));
+      if(v) u.voice = v;
+      let started = false;
+      u.onstart = ()=>{ started = true; voiceMsg(""); };
+      u.onerror = e=>{ if(e.error && e.error!=="interrupted" && e.error!=="canceled") voiceMsg("No se pudo leer en voz alta ("+e.error+"). Toca «Repetir en voz alta» para intentarlo otra vez."); };
+      lastUtter = u;
+      try{ synth.resume(); }catch(e){}
+      synth.speak(u);
+      voiceTimer = setTimeout(()=>{
+        if(!started && !synth.speaking) voiceMsg("Si no oyes la voz, sube el volumen multimedia del móvil y toca «Repetir en voz alta».");
+      }, 2500);
+    }, 150);
+  }
+  function stopSpeak(){
+    clearTimeout(voiceTimer);
+    const tts = plugin("TextToSpeech"); if(tts){ try{ Promise.resolve(tts.stop()).catch(()=>{}); }catch(e){} }
+    if("speechSynthesis" in window){ try{ speechSynthesis.cancel(); }catch(e){} }
+  }
+
+  /* ---------- pantalla encendida ---------- */
+  let wake = null;
+  async function keepAwake(on){
+    const ka = plugin("KeepAwake");
+    if(on){
+      if(ka){ try{ await ka.keepAwake(); return; }catch(e){} }
+      try{ if(navigator.wakeLock) wake = await navigator.wakeLock.request("screen"); }catch(e){}
+    } else {
+      if(ka){ try{ await ka.allowSleep(); }catch(e){} }
+      try{ if(wake) await wake.release(); }catch(e){}
+      wake = null;
+    }
+  }
+  document.addEventListener("visibilitychange", ()=>{ if($("#cook").classList.contains("on") && document.visibilityState==="visible") keepAwake(true); });
+
+  /* ---------- modo cocina ---------- */
+  let ck = 0;
+  function openCook(){
+    if(!current || !(current.pasos||[]).length) return;
+    ck = 0;
+    $("#cook").classList.add("on");
+    pushOverlay("cook");
+    keepAwake(true);
+    paintVoice();
+    renderCook(true);
+  }
+  function hideCook(){ $("#cook").classList.remove("on"); stopSpeak(); voiceMsg(""); keepAwake(false); }
+  function paintVoice(){ const b=$("#ck-voice"); b.textContent = voiceOn ? "🔊 Voz" : "🔇 Voz"; b.setAttribute("aria-pressed", voiceOn); }
+  function renderCook(read){
+    const pasos = current.pasos || [], n = pasos.length;
+    if(ck >= n){
+      $("#ck-count").textContent = "¡Terminado!";
+      $("#ck-bar").style.width = "100%";
+      $("#ck-body").innerHTML = `<div class="cook-done"><div class="emo">🎉</div><h2>¡Buen provecho!</h2>
+        <p class="hint">Has terminado ${esc(current.titulo)}.</p>
+        <div class="actions" style="flex-direction:column;margin-top:20px">
+          <button class="btn" id="ck-used">Quitar de la despensa lo que se gastó</button>
+          <button class="btn alt" id="ck-again">Volver al primer paso</button></div></div>`;
+      $("#ck-nav").hidden = true;
+      if(read && voiceOn) speak("¡Terminado! Buen provecho.");
+      return;
+    }
+    $("#ck-nav").hidden = false;
+    const p = pasos[ck];
+    $("#ck-count").textContent = "Paso "+(ck+1)+" de "+n;
+    $("#ck-bar").style.width = Math.round((ck+1)/n*100)+"%";
+    const ing = (current.ingredientes||[]).map(x=>`<li><span>${esc(x.nombre)}</span><b>${esc(x.cantidad)}</b></li>`).join("");
+    $("#ck-body").innerHTML = `<div class="cook-num">Paso ${ck+1}</div>
+      <p class="cook-text">${esc(p.texto)}</p>
+      ${p.minutos>0 ? `<div class="cook-timer"><button class="btn alt" data-t="${ck}" data-m="${p.minutos}">⏱ ${p.minutos} min</button><span class="timer" data-tm="${ck}"></span></div>` : ""}
+      <div class="actions" style="margin-top:22px"><button class="btn ghost" id="ck-repeat">🔁 Repetir en voz alta</button></div>
+      <details class="cook-ing"><summary>Ver ingredientes</summary><ul class="ing">${ing}</ul></details>`;
+    if(timers[ck]) tick(ck);
+    $("#ck-prev").disabled = ck===0;
+    $("#ck-next").textContent = ck===n-1 ? "Terminar ✓" : "Siguiente →";
+    if(read && voiceOn) speak("Paso "+(ck+1)+". "+p.texto);
+  }
+  $("#ck-prev").onclick = ()=>{ if(ck>0){ ck--; renderCook(true); } };
+  $("#ck-next").onclick = ()=>{ ck++; renderCook(true); };
+  $("#ck-close").onclick = closeOverlay;
+  $("#ck-voice").onclick = ()=>{ voiceOn = !voiceOn; save("qc_voice", voiceOn); paintVoice(); if(voiceOn) renderCook(true); else { stopSpeak(); voiceMsg(""); } };
+  $("#ck-body").onclick = e=>{
+    const t = e.target.closest("[data-t]"); if(t){ toggleTimer(t.dataset.t, +t.dataset.m); return; }
+    if(e.target.id==="ck-repeat"){ const p=(current.pasos||[])[ck]; if(p) speak("Paso "+(ck+1)+". "+p.texto); }
+    if(e.target.id==="ck-again"){ ck=0; renderCook(true); }
+    if(e.target.id==="ck-used"){ closeOverlay(); setTimeout(()=>showUsed(), 60); }
+  };
+
+  /* ---------- lista de la compra ---------- */
+  function addToShop(list){
+    let n = 0;
+    list.map(s=>String(s).trim()).filter(Boolean).forEach(name=>{
+      if(!shop.some(s=>s.name.toLowerCase()===name.toLowerCase())){ shop.push({name, done:false}); n++; }
+    });
+    renderShop();
+    return n;
+  }
+  function renderShop(){
+    const box = $("#shopList");
+    box.innerHTML = !shop.length ? '<p class="empty">La lista está vacía. Añade cosas aquí o desde «Te faltaría» en una receta.</p>' :
+      shop.map((s,i)=>`<div class="shop-item${s.done?" done":""}">
+        <button class="shop-tick" data-tick="${i}" aria-pressed="${s.done}"><span class="box">${s.done?"✓":""}</span><span class="txt">${esc(s.name)}</span></button>
+        <button class="x" data-sdel="${i}" aria-label="Quitar ${esc(s.name)}">✕</button></div>`).join("");
+    const pending = shop.filter(s=>!s.done).length, bought = shop.length - pending;
+    const badge = $("#shopBadge"); badge.hidden = !pending; badge.textContent = pending;
+    $("#shopActions").hidden = !shop.length;
+    $("#shopToPantry").hidden = !bought; $("#shopClear").hidden = !bought;
+    $("#shopShare").hidden = !pending;
+    save("qc_shop", shop);
+  }
+  $("#shopAdd").onclick = ()=>{ addToShop($("#shopIn").value.split(/[,;\n]+/)); $("#shopIn").value=""; $("#shopIn").focus(); $("#shopStatus").textContent=""; };
+  $("#shopIn").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); $("#shopAdd").click(); }});
+  $("#shopList").onclick = e=>{
+    const t = e.target.closest("[data-tick]"), d = e.target.closest("[data-sdel]");
+    if(t){ const s = shop[+t.dataset.tick]; s.done = !s.done; renderShop(); }
+    if(d){ shop.splice(+d.dataset.sdel,1); renderShop(); }
+  };
+  $("#shopClear").onclick = ()=>{ shop = shop.filter(s=>!s.done); renderShop(); $("#shopStatus").textContent="Lista limpia ✓"; };
+  $("#shopToPantry").onclick = ()=>{
+    const bought = shop.filter(s=>s.done);
+    addItems(bought.map(s=>s.name).join(","));
+    shop = shop.filter(s=>!s.done); renderShop();
+    $("#shopStatus").className="status"; $("#shopStatus").textContent = "Añadidos "+bought.length+" alimentos a la despensa ✓";
+  };
+  $("#shopShare").onclick = async ()=>{
+    const text = "🛒 Lista de la compra\n\n" + shop.filter(s=>!s.done).map(s=>"• "+s.name).join("\n");
+    if(navigator.share){ try{ await navigator.share({ text }); return; }catch(e){ if(e && e.name==="AbortError") return; } }
+    openExternal("https://wa.me/?text="+encodeURIComponent(text));
+  };
+
+  /* ---------- estilos ---------- */
+  function applyStyle(s){
+    document.documentElement.setAttribute("data-style", s);
+    save("qc_style", s);
+    document.querySelectorAll("#styles button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.style===s));
+  }
+  $("#styles").onclick = e=>{ const b = e.target.closest("[data-style]"); if(b) applyStyle(b.dataset.style); };
+
   /* ---------- ajustes ---------- */
   const HELP = {
     gemini: `<h2>Cómo conseguir la clave gratis de Gemini</h2>
@@ -566,13 +878,19 @@ En "pasos", pon en "minutos" el tiempo de espera o cocción de ese paso (0 si no
   };
   $("#s-test").onclick = async ()=>{
     $("#s-save").click(); const st=$("#s-status");
-    if(!cfg.key) return;
+    if(!aiReady()) return;
     st.className="status"; st.textContent="Probando…";
     try{ await askAI('Responde SOLO con este JSON: {"ok":true}'); st.textContent="Conexión correcta ✓ Ya puedes buscar recetas."; }
     catch(e){ st.className="status err"; st.textContent = errText(e); }
   };
 
-  renderPantry(); renderList(); renderFavs(); renderSettings();
+  /* ---------- arranque ---------- */
+  applyStyle(load("qc_style","huerta"));
+  renderPantry(); renderList(); renderFavs(); renderShop(); renderSettings();
+  if("speechSynthesis" in window){ try{ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = ()=>{}; }catch(e){} }
+  if(window.claude && window.claude.use){
+    window.claude.use("sample").then(s=>{ sample = s; if(s) $("#s-claude").hidden = false; }).catch(()=>{});
+  }
   if("serviceWorker" in navigator && location.protocol==="https:" && location.hostname.endsWith("github.io")){
     navigator.serviceWorker.register("sw.js").catch(()=>{});
   }
