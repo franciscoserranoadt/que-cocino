@@ -573,6 +573,9 @@ En "pasos", pon en "minutos" el tiempo de espera o cocción de ese paso (0 si no
   };
 
   renderPantry(); renderList(); renderFavs(); renderSettings();
+  if("serviceWorker" in navigator && location.protocol==="https:" && location.hostname.endsWith("github.io")){
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  }
 })();
 </script>
 </body>
