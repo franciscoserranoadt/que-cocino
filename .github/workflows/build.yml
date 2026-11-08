@@ -3,6 +3,7 @@ name: Construir APK
 on:
   push:
     branches: [ main ]
+    paths: [ '.github/workflows/build.yml' ]
   workflow_dispatch:
 
 permissions:
@@ -31,12 +32,16 @@ jobs:
           mkdir -p www
           cp index.html www/index.html
           npm init -y
-          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 sharp@0.33
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 sharp@0.33 @capacitor-community/text-to-speech@6 @capacitor-community/keep-awake@6
           cat > capacitor.config.json <<'EOF'
           {
             "appId": "com.quecocino.app",
             "appName": "Qué cocino hoy",
-            "webDir": "www"
+            "webDir": "www",
+            "server": {
+              "url": "https://franciscoserranoadt.github.io/que-cocino/",
+              "cleartext": false
+            }
           }
           EOF
           npx cap add android
